@@ -8,7 +8,8 @@
     "endTime": "6:00am",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nMangala – By having its darshan, one never becomes impoverished.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nमंगला - के दर्शन करने से कंगाल नहीं होते कभी।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nमंगला - के दर्शन करने से कंगाल नहीं होते कभी।",
+    "background": "0xFF2A1A00"
   },
   {
     "title": "Shringar",
@@ -19,7 +20,8 @@
     "endTime": "7:30am",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nShringar – By having its darshan, one attains heaven.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nश्रृंगार - के दर्शन करने से स्वर्ग लोक मिलता है।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nश्रृंगार - के दर्शन करने से स्वर्ग लोक मिलता है।",
+    "background": "0xFF0F2340"
   },
   {
     "title": "Gwal",
@@ -30,7 +32,8 @@
     "endTime": "9:35am",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nGwal – By having its darshan, one’s honor and reputation remain intact.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nग्वाल - के दर्शन करने से प्रतिष्ठा बनी रहती है।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nग्वाल - के दर्शन करने से प्रतिष्ठा बनी रहती है।",
+    "background": "0xFF1B2E15"
   },
   {
     "title": "Rajbhog",
@@ -41,7 +44,8 @@
     "endTime": "12:15pm",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nRajbhog – By having its darshan, destiny becomes stronger.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nराजभोग - के दर्शन करने से भाग्य प्रबल होता है।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nराजभोग - के दर्शन करने से भाग्य प्रबल होता है।",
+    "background": "0xFF2E1527"
   },
   {
     "title": "Uthapan",
@@ -52,7 +56,8 @@
     "endTime": "4:00pm",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nUtthapan – By having its darshan, enthusiasm remains alive.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nउत्थापन - के दर्शन करने से उत्साह बना रहता है।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nउत्थापन - के दर्शन करने से उत्साह बना रहता है।",
+    "background": "0xFF2A1E00"
   },
   {
     "title": "Bhog",
@@ -63,7 +68,8 @@
     "endTime": "5:00pm",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nBhog – By having its darshan, faith and trust remain.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nभोग - के दर्शन करने से भरोसा बना रहता है।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nभोग - के दर्शन करने से भरोसा बना रहता है।",
+    "background": "0xFF26160A"
   },
   {
     "title": "Aarti",
@@ -74,7 +80,8 @@
     "endTime": "5:30pm",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nAarti – By having its darshan, selfishness never arises.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nआरती - के दर्शन करने से स्वार्थ न रहे कभी।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nआरती - के दर्शन करने से स्वार्थ न रहे कभी।",
+    "background": "0xFF231207"
   },
   {
     "title": "Shayan",
@@ -85,6 +92,7 @@
     "endTime": "",
     "status": "Closed",
     "message": "The glory of Darshan (divine vision) lies in the feeling of devotion\nShayan – By having its darshan, peace prevails.",
-    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nशयन - के दर्शन करने से शान्ति बनी रहती है।"
+    "messageHi": "दर्शन भावना के साथ ही दर्शन महिमा का माहत्म्य है\nशयन - के दर्शन करने से शान्ति बनी रहती है।",
+    "background": "0xFF0A1024"
   }
 ]
