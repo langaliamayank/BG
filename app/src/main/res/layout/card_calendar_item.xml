@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/childLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_38sdp"
+        android:background="@drawable/bg_calendar"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/imageAP"
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_8sdp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/_minus3sdp"
+            android:layout_marginRight="@dimen/_5sdp" />
+
+        <LinearLayout
+            android:id="@+id/primaryContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/tvPrimaryDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textColor="@color/colorLightGray"
+                android:textSize="@dimen/_11sdp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageEvent"
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="@dimen/_5sdp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/_1sdp"
+                android:layout_marginBottom="@dimen/_3sdp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/primaryContainer"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:minLines="2"
+            android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_5sdp"
+            android:text="@string/app_name"
+            android:textColor="@color/colorGray"
+            android:textSize="@dimen/_4sdp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/selector"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_38sdp"
+        android:background="@drawable/bg_calendar_cell_selector" />
+
+</RelativeLayout>

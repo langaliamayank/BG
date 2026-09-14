@@ -1,0 +1,339 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/parentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="96px"
+        android:layout_marginTop="54px"
+        android:layout_marginRight="96px"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/_3sdp">
+
+            <Button
+                android:id="@+id/btnPrev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_3sdp"
+                android:background="@drawable/button_selector"
+                android:focusable="true"
+                android:minHeight="@dimen/_0dp"
+                android:padding="@dimen/_3sdp"
+                android:text="PREVIOUS" />
+
+            <TextView
+                android:id="@+id/tvMonthTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMonthVS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:textAlignment="center"
+                android:textColor="@color/colorGray"
+                android:textSize="@dimen/_6sdp" />
+
+            <LinearLayout
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageKP"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:background="@drawable/bg_calendar" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Krushna Paksh"
+                    android:textSize="@dimen/_5sdp" />
+
+                <ImageView
+                    android:id="@+id/imageSP"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:background="@drawable/bg_calendar" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Shukla Paksh"
+                    android:textSize="@dimen/_5sdp" />
+
+                <ImageView
+                    android:id="@+id/imageToday"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:background="@drawable/bg_calendar" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Today"
+                    android:textSize="@dimen/_5sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:src="@drawable/ic_action_amavasya" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Amavas"
+                    android:textSize="@dimen/_5sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:src="@drawable/ic_action_poonam" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Poonam"
+                    android:textSize="@dimen/_5sdp" />
+
+
+                <ImageView
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:src="@drawable/bg_calendar_event" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Upcoming Events"
+                    android:textSize="@dimen/_5sdp" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:background="@drawable/button_selector"
+                android:focusable="true"
+                android:minHeight="@dimen/_0dp"
+                android:padding="@dimen/_3sdp"
+                android:text="NEXT" />
+
+            <!--                <ImageView-->
+            <!--                    android:id="@+id/btnPrev"-->
+            <!--                    android:layout_width="@dimen/_24sdp"-->
+            <!--                    android:layout_height="@dimen/_24sdp"-->
+            <!--                    android:background="@drawable/bg_calendar_cell_selector"-->
+            <!--                    android:clickable="true"-->
+            <!--                    android:focusable="true"-->
+            <!--                    android:focusableInTouchMode="true"-->
+            <!--                    android:nextFocusRight="@+id/utsav_container"-->
+            <!--                    android:src="@drawable/ic_action_backward" />-->
+            <!--                -->
+            <!--                <ImageView-->
+            <!--                    android:id="@+id/btnNext"-->
+            <!--                    android:layout_width="@dimen/_24sdp"-->
+            <!--                    android:layout_height="@dimen/_24sdp"-->
+            <!--                    android:background="@drawable/bg_calendar_cell_selector"-->
+            <!--                    android:clickable="true"-->
+            <!--                    android:focusable="true"-->
+            <!--                    android:focusableInTouchMode="true"-->
+            <!--                    android:nextFocusRight="@+id/utsav_container"-->
+            <!--                    android:src="@drawable/ic_action_forward" />-->
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:descendantFocusability="blocksDescendants"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textSun"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="SUN"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                    <TextView
+                        android:id="@+id/textMon"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="MON"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                    <TextView
+                        android:id="@+id/textTue"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="TUE"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                    <TextView
+                        android:id="@+id/textWed"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="WED"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                    <TextView
+                        android:id="@+id/textThu"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="THU"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                    <TextView
+                        android:id="@+id/textFri"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="FRI"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                    <TextView
+                        android:id="@+id/textSat"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_calendar"
+                        android:gravity="center"
+                        android:padding="@dimen/_3sdp"
+                        android:text="SAT"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/_6sdp" />
+
+                </LinearLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPagerCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_weight="0.35"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textUE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_calendar"
+                    android:gravity="center"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Upcoming Events"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/_6sdp" />
+
+                <androidx.leanback.widget.VerticalGridView
+                    android:id="@+id/verticalGridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:scrollbars="none" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
