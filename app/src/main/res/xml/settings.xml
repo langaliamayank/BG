@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="My Settings">
+
+    <SwitchPreference
+        android:key="keyAutoplay"
+        android:title="Autoplay Next Verse"
+        android:summaryOn="Next verse plays automatically"
+        android:summaryOff="Playback stops after current verse"
+        android:defaultValue="true" />
+
+    <ListPreference
+        android:entries="@array/listArray"
+        android:entryValues="@array/listValues"
+        android:key="keyLanguage"
+        android:summary="English"
+        android:title="Language"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceScreen
+        android:key="keyVersion"
+        android:selectable="false"
+        android:summary="v1.0"
+        android:title="Version" />
+
+</PreferenceScreen>

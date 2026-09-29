@@ -1,0 +1,81 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'com.androidtv.bhagavadgita'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.androidtv.bhagavadgita"
+        minSdk 28
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.cronet
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    implementation libs.androidx.preference
+    implementation libs.media3.datasource.cronet
+
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+
+    implementation 'androidx.leanback:leanback:1.2.0'
+    implementation 'androidx.leanback:leanback-preference:1.2.0'
+    implementation 'androidx.palette:palette:1.0.0'
+
+    implementation libs.gson
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.converter.scalars
+
+    // For Multi resolution support ..
+    implementation libs.sdp.android
+
+    //Media3
+    implementation 'androidx.media3:media3-exoplayer:1.11.1'
+    implementation 'androidx.media3:media3-ui:1.11.1'
+    implementation 'androidx.media3:media3-ui-leanback:1.11.1'
+    implementation 'androidx.media3:media3-session:1.11.1'
+
+    implementation 'androidx.media3:media3-exoplayer-hls:1.11.1'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.11.1'
+    implementation 'org.checkerframework:checker-qual:3.42.0'
+
+//    annotationProcessor libs.compiler
+
+    implementation("org.conscrypt:conscrypt-android:2.7.0")
+
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.16.0'
+
+// Kotlin project:
+//    kapt 'com.github.bumptech.glide:compiler:4.16.0'
+
+// Java project:
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+
+}

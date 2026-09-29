@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/similarParent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+<!--        <ImageView-->
+<!--            android:id="@+id/upNextPoster"-->
+<!--            android:layout_width="@dimen/yondoo_detail_similar_poster_width"-->
+<!--            android:layout_height="@dimen/yondoo_detail_similar_poster_height"-->
+<!--            android:contentDescription="TODO"-->
+<!--            android:padding="3px"-->
+<!--            android:scaleType="fitXY" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/upNextSelector"-->
+<!--            android:layout_width="@dimen/yondoo_detail_similar_poster_width"-->
+<!--            android:layout_height="@dimen/yondoo_detail_similar_poster_height"-->
+<!--            android:background="@drawable/button_style" />-->
+
+    </RelativeLayout>
+
+</LinearLayout>

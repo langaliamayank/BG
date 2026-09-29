@@ -55,7 +55,7 @@ public class CoverflowItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     /**
-     * Matches the step-down scale calculation in MyListRowPresenter
+     * Matches the step-down scale calculation in CustomListRowPresenter
      */
     private float getScaleForDistance(int absDistance) {
         return Math.max(0.35f, 1.00f - (absDistance * 0.15f));

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="@dimen/_2sdp">
+
+        <TextView
+            android:id="@+id/textDarshanName"
+            android:layout_width="@dimen/_0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:fontFamily="@font/font"
+            android:textSize="@dimen/_8sdp" />
+
+        <TextView
+            android:id="@+id/textDarshanTime"
+            android:layout_width="@dimen/_0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:fontFamily="@font/font"
+            android:textSize="@dimen/_8sdp" />
+
+        <TextView
+            android:id="@+id/textDarshanStatus"
+            android:layout_width="@dimen/_0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:fontFamily="@font/font"
+            android:textSize="@dimen/_8sdp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

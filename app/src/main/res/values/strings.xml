@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Shrinathji TV</string>
+    <string-array name="listArray">
+        <item>English</item>
+        <item>Hindi</item>
+    </string-array>
+
+    <string-array name="listValues">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!--    Pagination-->
+    <string name="title_oops">Oops</string>
+    <string name="title_no_videos">No videos</string>
+    <string name="message_try_again">Try again?</string>
+    <string name="message_check_again">Check again?</string>
+
+    <string name="error_cleartext_not_permitted">Cleartext HTTP traffic not permitted. See https://developer.android.com/guide/topics/media/issues/cleartext-not-permitted</string>
+    <string name="error_drm_unsupported_scheme">This device does not support the required DRM scheme</string>
+    <string name="error_unsupported_video">Media includes video tracks, but none are playable by this device</string>
+    <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
+</resources>

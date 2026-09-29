@@ -16,13 +16,14 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowMetrics;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.leanback.app.BrowseSupportFragment;
-import androidx.leanback.app.VerticalGridSupportFragment;
+import androidx.leanback.widget.RowPresenter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidtv.bhagavadgita.comman.BackgroundImageUtils;
 import com.androidtv.bhagavadgita.comman.GlideHelper;
@@ -30,25 +31,23 @@ import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.OnBackPressedListener;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.fragment.DarshanFragment;
-import com.androidtv.bhagavadgita.fragment.DashboardFragment;
-import com.androidtv.bhagavadgita.fragment.GaumatajiSevaFragment;
 import com.androidtv.bhagavadgita.fragment.GitaFragment;
 import com.androidtv.bhagavadgita.fragment.HistoryFragment;
+import com.androidtv.bhagavadgita.fragment.HomeFragment;
 import com.androidtv.bhagavadgita.fragment.HomeNewFragment;
 import com.androidtv.bhagavadgita.fragment.MusicFragment;
 import com.androidtv.bhagavadgita.fragment.PushtimargFragment;
 import com.androidtv.bhagavadgita.fragment.VallabhacharyaFragment;
 import com.androidtv.bhagavadgita.model.ActionModel;
-import com.androidtv.bhagavadgita.model.ChapterModel;
 import com.androidtv.bhagavadgita.model.DarshanModel;
-import com.androidtv.bhagavadgita.model.FestivalModel;
 import com.androidtv.bhagavadgita.model.PushtimargModel;
 import com.androidtv.bhagavadgita.model.VersesModel;
-import com.androidtv.bhagavadgita.presenter.MyListRowPresenter;
+import com.androidtv.bhagavadgita.presenter.CustomListRowPresenter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 public class CommanActivity extends MasterActivity implements
+        HomeFragment.OnBrowseRowListener,
         GitaFragment.OnBrowseRowListener,
         DarshanFragment.OnBrowseRowListener,
         PushtimargFragment.OnBrowseRowListener,
@@ -56,14 +55,11 @@ public class CommanActivity extends MasterActivity implements
         VallabhacharyaFragment.OnBrowseRowListener {
 
     private ActionModel actionModel;
-    private BrowseSupportFragment mBrowseFragment;
 
     private static final int CONTENT_IMAGE_CROSS_FADE_DURATION = 1000;
     private ImageView mContentImage;
     private View mMainFrame;
     private Drawable mBackgroundWithPreview;
-
-    private OnBackPressedListener onBackPressedListener;
 
     public static Intent createIntent(Context context, ActionModel actionModel) {
         Intent intent = new Intent(context, CommanActivity.class);
@@ -85,43 +81,86 @@ public class CommanActivity extends MasterActivity implements
                 long id = actionModel.getId();
 
                 if (id == 0)
-                    switchFragment(new DarshanFragment());
-                else if (id == 1) {
-                    switchFragment(new MusicFragment());
-                } else if (id == 3) {
                     switchFragment(new PushtimargFragment());
-                } else if (id == 6) {
-                    switchFragment(new VallabhacharyaFragment());
-                } else if (id == 9) {
+                else if (id == 2)
                     switchFragment(new HistoryFragment());
-                } else if (id == 10) {
+                else if (id == 4)
+                    switchFragment(new MusicFragment());
+                else if (id == 8)
                     switchFragment(new GitaFragment());
-                }
+                else if (id == 9)
+                    switchFragment(new DarshanFragment());
+                else
+                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             }
         }
 
-        getOnBackPressedDispatcher().addCallback(
-                this,
-                new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        if (onBackPressedListener != null) {
-                            onBackPressedListener.doBack();
-                        } else {
-                            finish();
-                        }
-                    }
-                });
+        setupBackPressHandler();
     }
 
-    public void switchFragment(BrowseSupportFragment fragment) {
-        if (mContentImage != null) {
-            GlideHelper.clearImage(mContentImage);
-        }
+    private void setupBackPressHandler() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                boolean hasBack = false;
+                try {
+                    View container = findViewById(R.id.container);
+                    if (container != null && container.isShown()) {
+                        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
 
-        mBrowseFragment = fragment;
+                        if (fragment != null) {
+                            hasBack = resetRowSelectionToZero(fragment);
+                        }
+                    }
+                } catch (Exception e) {
+                    LogTag.e("BackPress Error: " + e.getMessage());
+                }
+
+                if (!hasBack) {
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+
+                    if (fragment instanceof HomeFragment) {
+                        finish();
+                    } else {
+                        loadHomeFragment();
+                    }
+                }
+            }
+        });
+    }
+
+    private boolean resetRowSelectionToZero(Object rowsFrag) {
+        try {
+            if (rowsFrag instanceof BrowseSupportFragment) {
+                BrowseSupportFragment browseFrag = (BrowseSupportFragment) rowsFrag;
+
+                if (browseFrag.getRowsSupportFragment() != null) {
+                    int selectedRowPosition = browseFrag.getRowsSupportFragment().getSelectedPosition();
+
+                    RowPresenter.ViewHolder viewHolder = browseFrag.getRowsSupportFragment().getRowViewHolder(selectedRowPosition);
+
+                    if (viewHolder instanceof CustomListRowPresenter.ViewHolder) {
+                        CustomListRowPresenter.ViewHolder selectedRow = (CustomListRowPresenter.ViewHolder) viewHolder;
+                        int selectedItemPosition = selectedRow.getSelectedPosition();
+
+                        if (selectedItemPosition > 0) {
+                            browseFrag.setSelectedPosition(selectedRowPosition, true,
+                                    new CustomListRowPresenter.SelectItemViewHolderTask(0));
+                            return true; // Consumes the back press so it only scrolls to 0
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LogTag.e("RowReset Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private void loadHomeFragment() {
+        finishAfterTransition();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, mBrowseFragment)
+                .replace(R.id.container, new HomeFragment())
                 .commit();
     }
 
@@ -233,52 +272,13 @@ public class CommanActivity extends MasterActivity implements
                 screenWidth, screenHeight, imageWidth, imageHeight, gradientSize, parsedColor);
     }
 
-    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-        this.onBackPressedListener = onBackPressedListener;
-    }
-
-    @Override
-    public void handleOnBack() {
-        boolean hasBack = false;
-        try {
-            if (findViewById(R.id.container).isShown()) {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-                if (fragment instanceof HomeNewFragment) {
-                    HomeNewFragment mBrowseFragment = (HomeNewFragment) fragment;
-                    int selectedRowPosition = mBrowseFragment.getRowsSupportFragment().getSelectedPosition();
-
-                    MyListRowPresenter.ViewHolder selectedRow = (MyListRowPresenter.ViewHolder) mBrowseFragment.getRowsSupportFragment().getRowViewHolder(selectedRowPosition);
-                    int selectedItemPosition = selectedRow.getSelectedPosition();
-
-                    if (selectedItemPosition == 0) {
-                        hasBack = false;
-                    } else {
-                        hasBack = true;
-                        mBrowseFragment.getRowsSupportFragment().setSelectedPosition(selectedRowPosition, true,
-                                new MyListRowPresenter.SelectItemViewHolderTask(0));
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mBrowseFragment.setFocusOnFirstPoster();
-                            }
-                        }, 200);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            LogTag.e(e + "");
+    public void switchFragment(Fragment fragment) {
+        if (mContentImage != null) {
+            GlideHelper.clearImage(mContentImage);
         }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN));
-            }
-        }, 500);
-
-        if (!hasBack) {
-
-        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.commitAllowingStateLoss();
     }
 }

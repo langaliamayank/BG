@@ -1,16 +1,8 @@
 package com.androidtv.bhagavadgita.fragment;
 
-import static com.androidtv.bhagavadgita.MasterActivity.loadJSONFromAsset;
-
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +26,6 @@ import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.MyApplication;
 import com.androidtv.bhagavadgita.comman.NavigableFragment;
 import com.androidtv.bhagavadgita.comman.RowHeaderItem;
-import com.androidtv.bhagavadgita.comman.RowListener;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.model.ActionModel;
 import com.androidtv.bhagavadgita.model.ChapterModel;
@@ -47,12 +38,12 @@ import com.androidtv.bhagavadgita.model.VersesModel;
 import com.androidtv.bhagavadgita.network.APIClient;
 import com.androidtv.bhagavadgita.network.APIInterface;
 import com.androidtv.bhagavadgita.presenter.CardPresenter;
+import com.androidtv.bhagavadgita.presenter.CustomListRowPresenter;
 import com.androidtv.bhagavadgita.presenter.DarshanPresenter;
 import com.androidtv.bhagavadgita.presenter.DarshanTodayPresenter;
 import com.androidtv.bhagavadgita.presenter.FestivalPresenter;
 import com.androidtv.bhagavadgita.presenter.HistoryPresenter;
 import com.androidtv.bhagavadgita.presenter.MorePresenter;
-import com.androidtv.bhagavadgita.presenter.MyListRowPresenter;
 import com.androidtv.bhagavadgita.presenter.PushtimargPresenter;
 import com.androidtv.bhagavadgita.presenter.VallabhacharyaPresenter;
 import com.androidtv.bhagavadgita.presenter.VersesOfTheDayPresenter;
@@ -79,7 +70,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -226,7 +216,7 @@ public class HomeNewFragment extends BrowseSupportFragment implements NavigableF
     }
 
     private void setupRowAdapter() {
-        MyListRowPresenter selector = new MyListRowPresenter((MasterActivity) requireActivity(), 0);
+        CustomListRowPresenter selector = new CustomListRowPresenter((MasterActivity) requireActivity());
         mRowsAdapter = new ArrayObjectAdapter(selector);
         setAdapter(mRowsAdapter);
 

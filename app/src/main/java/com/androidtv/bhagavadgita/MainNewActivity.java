@@ -9,7 +9,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidtv.bhagavadgita.comman.BackgroundImageUtils;
 import com.androidtv.bhagavadgita.comman.GlideHelper;
 import com.androidtv.bhagavadgita.comman.LogTag;
-import com.androidtv.bhagavadgita.comman.MyApplication;
 import com.androidtv.bhagavadgita.comman.NavigableFragment;
 import com.androidtv.bhagavadgita.comman.NavigationDrawerItem;
 import com.androidtv.bhagavadgita.fragment.DarshanFragment;
@@ -47,7 +45,7 @@ import com.androidtv.bhagavadgita.model.ActionModel;
 import com.androidtv.bhagavadgita.model.DarshanModel;
 import com.androidtv.bhagavadgita.model.FestivalModel;
 import com.androidtv.bhagavadgita.model.PushtimargModel;
-import com.androidtv.bhagavadgita.presenter.MyListRowPresenter;
+import com.androidtv.bhagavadgita.presenter.CustomListRowPresenter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
@@ -56,8 +54,7 @@ import java.util.List;
 public class MainNewActivity extends MasterActivity implements
         HomeNewFragment.OnBrowseRowListener,
         DarshanFragment.OnBrowseRowListener,
-        GitaFragment.OnBrowseRowListener,
-        MusicFragment.OnBrowseRowListener {
+        GitaFragment.OnBrowseRowListener {
 
     private static int selectedIndex = 0;
     public static VerticalGridView verticalGridView;
@@ -99,12 +96,12 @@ public class MainNewActivity extends MasterActivity implements
 
         // 3. Load initial fragment and metadata safely now that adapter is ready
         if (savedInstanceState == null) {
-            switchFragment(new HomeNewFragment());
+//            switchFragment(new HomeNewFragment());
         }
 
 //        applyDarshanTheme();
         showMetadata();
-        toggleDrawer(false);
+//        toggleDrawer(false);
 
 
     }
@@ -257,11 +254,11 @@ public Bitmap getBG(String colorHex) {
                 mMainFrame.setBackground(mBackgroundWithPreview);
             }
 
-            Glide.with(this)
-                    .load(R.drawable.utsav)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(mContentImage);
-            mMainFrame.setBackground(mBackgroundWithPreview);
+//            Glide.with(this)
+//                    .load(R.drawable.utsav)
+//                    .transition(DrawableTransitionOptions.withCrossFade())
+//                    .into(mContentImage);
+//            mMainFrame.setBackground(mBackgroundWithPreview);
 
         } else if (object instanceof ActionModel) {
             Bitmap bmp = getBG("#000000");
@@ -271,11 +268,11 @@ public Bitmap getBG(String colorHex) {
                 mMainFrame.setBackground(mBackgroundWithPreview);
             }
 
-            Glide.with(this)
-                    .load(R.drawable.utsav)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(mContentImage);
-            mMainFrame.setBackground(mBackgroundWithPreview);
+//            Glide.with(this)
+//                    .load(R.drawable.utsav)
+//                    .transition(DrawableTransitionOptions.withCrossFade())
+//                    .into(mContentImage);
+//            mMainFrame.setBackground(mBackgroundWithPreview);
 
         }  else {
             mMainFrame.setBackgroundColor(Color.TRANSPARENT);
@@ -328,7 +325,7 @@ public Bitmap getBG(String colorHex) {
 
             viewHolder.itemView.setOnClickListener(view -> {
                 if (position == 0) {
-                    switchFragment(new HomeNewFragment());
+//                    switchFragment(new HomeNewFragment());
                 } else if (position == 1) {
 //                    switchFragment(new DarshanFragment());
 
@@ -337,9 +334,9 @@ public Bitmap getBG(String colorHex) {
                     startActivity(intent);
 
                 } else if (position == 2) {
-                    switchFragment(new GitaFragment());
+//                    switchFragment(new GitaFragment());
                 } else if (position == 3) {
-                    switchFragment(new MusicFragment());
+//                    switchFragment(new MusicFragment());
                 } else if (position == 4) {
                     Toast.makeText(mContext, "Notification", Toast.LENGTH_SHORT).show();
                 } else if (position == 5) {
@@ -385,139 +382,4 @@ public Bitmap getBG(String colorHex) {
         }
     }
 
-    public void switchFragment(BrowseSupportFragment fragment) {
-        if (mContentImage != null) {
-            GlideHelper.clearImage(mContentImage);
-        }
-
-        if (relativeLayout != null) {
-            toggleDrawer(false);
-        }
-
-        mBrowseFragment = fragment;
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, mBrowseFragment)
-                .commit();
-    }
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() != KeyEvent.ACTION_DOWN) return super.dispatchKeyEvent(event);
-
-        int keyCode = event.getKeyCode();
-        View currentFocus = getCurrentFocus();
-
-        boolean isFocusInNav = (currentFocus != null &&
-                (currentFocus.getId() == R.id.navigationItem ||
-                        currentFocus.getId() == R.id.verticalGridView));
-
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (isFocusInNav) {
-                    return true;
-                }
-
-                // Check if we are currently inside HomeNewFragment
-                if (mBrowseFragment instanceof BrowseSupportFragment) {
-                    try {
-                        BrowseSupportFragment fragment = (BrowseSupportFragment) mBrowseFragment;
-                        if (fragment.getRowsSupportFragment() != null) {
-                            MyListRowPresenter.ViewHolder rowVh = (MyListRowPresenter.ViewHolder)
-                                    fragment.getRowsSupportFragment()
-                                            .getRowViewHolder(fragment.getRowsSupportFragment().getSelectedPosition());
-
-                            if (rowVh != null && rowVh.getSelectedPosition() == 0) {
-                                toggleDrawer(true);
-                                return true;
-                            }
-                        }
-                    } catch (Exception e) {
-                        LogTag.e(e.toString());
-                    }
-                }
-
-                break;
-
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (isFocusInNav) {
-                    toggleDrawer(false);
-                    return true;
-                }
-                break;
-        }
-
-        return super.dispatchKeyEvent(event);
-    }
-
-    private void toggleDrawer(boolean expand) {
-        if (navigationAdapter != null) {
-            navigationAdapter.setMenuExpanded(expand);
-            navigationAdapter.notifyDataSetChanged();
-        }
-
-        int targetWidth = expand ?
-                getResources().getDimensionPixelSize(R.dimen.navigation_drawer_expanded_width) :
-                getResources().getDimensionPixelSize(R.dimen.navigation_drawer_collapsed_width);
-
-        if (relativeLayout != null) {
-            relativeLayout.getLayoutParams().width = targetWidth;
-            relativeLayout.requestLayout();
-
-            if (expand) {
-                relativeLayout.post(() -> verticalGridView.requestFocus());
-            } else {
-                relativeLayout.clearFocus();
-                if (mBrowseFragment instanceof NavigableFragment) {
-                    View firstPoster = ((NavigableFragment) mBrowseFragment).getmFirstPosterView();
-                    if (firstPoster != null) firstPoster.requestFocus();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void handleOnBack() {
-        boolean hasBack = false;
-        try {
-            if (findViewById(R.id.container).isShown()) {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-                if (fragment instanceof HomeNewFragment) {
-                    HomeNewFragment mBrowseFragment = (HomeNewFragment) fragment;
-                    int selectedRowPosition = mBrowseFragment.getRowsSupportFragment().getSelectedPosition();
-
-                    MyListRowPresenter.ViewHolder selectedRow = (MyListRowPresenter.ViewHolder) mBrowseFragment.getRowsSupportFragment().getRowViewHolder(selectedRowPosition);
-                    int selectedItemPosition = selectedRow.getSelectedPosition();
-
-                    if (selectedItemPosition == 0) {
-                        hasBack = false;
-                    } else {
-                        hasBack = true;
-                        mBrowseFragment.getRowsSupportFragment().setSelectedPosition(selectedRowPosition, true,
-                                new MyListRowPresenter.SelectItemViewHolderTask(0));
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mBrowseFragment.setFocusOnFirstPoster();
-                            }
-                        }, 200);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            LogTag.e(e + "");
-        }
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN));
-            }
-        }, 500);
-
-        if (!hasBack) {
-
-        }
-    }
 }

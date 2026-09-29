@@ -2,24 +2,19 @@ package com.androidtv.bhagavadgita.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ImageView;
 
-import androidx.fragment.app.Fragment;
-import androidx.leanback.app.BackgroundManager;
 import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.BaseGridView;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
+import androidx.leanback.widget.TitleViewAdapter;
 import androidx.leanback.widget.VerticalGridView;
 
 import com.androidtv.bhagavadgita.CommanActivity;
@@ -30,14 +25,11 @@ import com.androidtv.bhagavadgita.comman.Constants;
 import com.androidtv.bhagavadgita.comman.HeaderView;
 import com.androidtv.bhagavadgita.comman.OnBackPressedListener;
 import com.androidtv.bhagavadgita.comman.RowHeaderItem;
-import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.model.HistoryModel;
-import com.androidtv.bhagavadgita.model.PushtimargModel;
 import com.androidtv.bhagavadgita.network.APIClient;
 import com.androidtv.bhagavadgita.network.APIInterface;
+import com.androidtv.bhagavadgita.presenter.CustomListRowPresenter;
 import com.androidtv.bhagavadgita.presenter.HistoryPresenter;
-import com.androidtv.bhagavadgita.presenter.MyListRowPresenter;
-import com.androidtv.bhagavadgita.presenter.PushtimargPresenter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -50,52 +42,14 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class HistoryFragment extends BrowseSupportFragment implements OnBackPressedListener {
+public class HistoryFragment extends MasterBrowseFragment {
 
     private ArrayObjectAdapter mRowsAdapter;
     private OnBrowseRowListener mCallback;
     private HeaderView headerView;
 
-    private static final String SPINNER_TAG = "LoadingOverlay";
-    private SpinnerSupportFragment mSpinnerFragment;
-
-
-    @Override
-    public void doBack() {
-        try {
-            int selectedRowPosition = getRowsSupportFragment().getSelectedPosition();
-
-            MyListRowPresenter.ViewHolder selectedRow = (MyListRowPresenter.ViewHolder) getRowsSupportFragment().getRowViewHolder(selectedRowPosition);
-            int selectedItemPosition = selectedRow.getSelectedPosition();
-
-            if (selectedItemPosition == 0) {
-                ((CommanActivity) getActivity()).switchFragment(new DashboardFragment());
-
-            } else {
-                getRowsSupportFragment().setSelectedPosition(selectedRowPosition, true,
-                        new MyListRowPresenter.SelectItemViewHolderTask(0));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public interface OnBrowseRowListener {
         void onItemSelected(Object item, long index);
-    }
-
-    public void disableClipping(View view) {
-        if (view == null) return;
-        if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            viewGroup.setClipChildren(false);
-            viewGroup.setClipToPadding(false);
-        }
-        ViewParent parent = view.getParent();
-        if (parent instanceof View) {
-            disableClipping((View) parent);
-        }
     }
 
     @Override
@@ -104,95 +58,104 @@ public class HistoryFragment extends BrowseSupportFragment implements OnBackPres
         return headerView;
     }
 
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        int resId = view.getContext().getResources().getIdentifier("scale_frame", "id", view.getContext().getPackageName());
-        View rowsContainer = view.findViewById(resId);
-        if (rowsContainer != null) {
-            int padding = getResources().getDimensionPixelSize(R.dimen.content_image_height);
-            rowsContainer.setPadding(0, padding, 0, 0);
+    private final TitleViewAdapter mFallbackTitleAdapter = new TitleViewAdapter() {
+        @Nullable
+        @Override
+        public View getSearchAffordanceView() {
+            return null;
         }
 
-        prepareEntranceTransition();
-        new Handler(Looper.getMainLooper()).postDelayed(this::startEntranceTransition, Constants.INTERVAL);
+        @Override
+        public void updateComponentsVisibility(int flags) {}
+    };
 
-        view.post(() -> {
-            if (getRowsSupportFragment() != null) {
-                VerticalGridView vgv = getRowsSupportFragment().getVerticalGridView();
-                if (vgv != null) {
-                    vgv.setItemAnimator(null);
-                    vgv.setClipChildren(false);
-                    vgv.setClipToPadding(false);
-                    vgv.setFocusScrollStrategy(BaseGridView.FOCUS_SCROLL_ALIGNED);
-                    vgv.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_NO_EDGE);
-                    vgv.setWindowAlignmentOffsetPercent(0f);
-                    disableClipping(vgv);
-                }
-            }
-        });
+    @Nullable
+    @Override
+    public TitleViewAdapter getTitleViewAdapter() {
+        if (headerView != null && headerView.getTitleViewAdapter() != null) {
+            return headerView.getTitleViewAdapter();
+        }
+        return mFallbackTitleAdapter;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setupUIElements();
+        if (savedInstanceState == null) {
+            prepareEntranceTransition();
+        }
+
+        setupCallback();
         setupRowAdapter();
         setupEventListeners();
     }
 
-    private void showLoader() {
-        if (getParentFragmentManager().findFragmentByTag(SPINNER_TAG) != null) return;
-        mSpinnerFragment = new SpinnerSupportFragment();
-        getParentFragmentManager().beginTransaction()
-                .add(android.R.id.content, mSpinnerFragment, SPINNER_TAG)
-                .commitAllowingStateLoss();
-    }
-
-    private void hideLoader() {
-        if (!isAdded()) return;
-        Fragment fragment = getParentFragmentManager().findFragmentByTag(SPINNER_TAG);
-        if (fragment != null) {
-            getParentFragmentManager().beginTransaction()
-                    .remove(fragment)
-                    .commitAllowingStateLoss();
-            mSpinnerFragment = null;
+    private void setupCallback() {
+        if (getActivity() instanceof OnBrowseRowListener) {
+            mCallback = (OnBrowseRowListener) getActivity();
+        } else {
+            throw new ClassCastException(getActivity().toString() + " must implement OnBrowseRowListener");
         }
     }
 
-    private void updateHeaderVisibility(boolean show) {
-        if (headerView == null) return;
+    private void setupRowAdapter() {
+        CustomListRowPresenter selector = new CustomListRowPresenter((MasterActivity) requireActivity());
+        mRowsAdapter = new ArrayObjectAdapter(selector);
+        setAdapter(mRowsAdapter);
 
-        float targetAlpha = show ? 1f : 0f;
-        headerView.animate()
-                .alpha(targetAlpha)
-                .setDuration(100)
-                .start();
+        new Thread(() -> {
+            try {
+                Thread.sleep(Constants.INTERVAL);
 
-        if (!isAdded()) return;
+                createHistory();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
 
-        Activity activity = getActivity();
-        if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+    private void createHistory() {
+        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<ResponseBody> loginCall = apiInterface.getHistory();
+        APIClient.callAPI((MasterActivity) getActivity(), loginCall, new APIClient.APICallback() {
+            @Override
+            public void onSuccess(String response) {
+                HistoryPresenter historyPresenter = new HistoryPresenter((MasterActivity) getActivity());
+                ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(historyPresenter);
 
-        View contentImage = activity.findViewById(R.id.content_image);
-        if (contentImage != null) {
-            contentImage.animate()
-                    .alpha(targetAlpha)
-                    .setDuration(100)
-                    .start();
-        }
+                try {
+                    List<HistoryModel> historyModelList = new Gson().fromJson(response, new TypeToken<List<HistoryModel>>() {
+                    }.getType());
+                    for (HistoryModel historyModel : historyModelList) {
+                        listRowAdapter.add(historyModel);
+                    }
 
-        ImageView mainActivityImageView = getActivity().findViewById(R.id.content_image);
-        View rowsContainer = getView().findViewById(androidx.leanback.R.id.scale_frame);
-        if (rowsContainer != null) {
-            int padding_high = getResources().getDimensionPixelSize(R.dimen.content_image_height);
-            int padding_low = getResources().getDimensionPixelSize(R.dimen.low_padding);
-            rowsContainer.setPadding(0, show ? padding_high : padding_low, 0, 0);
-            mainActivityImageView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
+                    RowHeaderItem cardPresenterHeader = new RowHeaderItem(0, "Shrinathji", Collections.singletonList(historyModelList));
+                    cardPresenterHeader.setDescription("History");
+                    mRowsAdapter.add(new ListRow(cardPresenterHeader, listRowAdapter));
+
+                    if (getView() != null) {
+                        getView().post(() -> {
+                            if (isAdded()) {
+                                startEntranceTransition();
+                            }
+                        });
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String error, int responseCode) {
+            }
+
+            @Override
+            public void onError(String error) {
+            }
+        });
     }
 
     private void setupEventListeners() {
@@ -237,68 +200,35 @@ public class HistoryFragment extends BrowseSupportFragment implements OnBackPres
         });
     }
 
-    private void setupRowAdapter() {
-        showLoader();
+    private void updateHeaderVisibility(boolean show) {
+        if (headerView == null) return;
 
-        MyListRowPresenter selector = new MyListRowPresenter((MasterActivity) getActivity(), 0);
-        mRowsAdapter = new ArrayObjectAdapter(selector);
-        setAdapter(mRowsAdapter);
+        float targetAlpha = show ? 1f : 0f;
+        headerView.animate()
+                .alpha(targetAlpha)
+                .setDuration(100)
+                .start();
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(Constants.INTERVAL);
+        if (!isAdded()) return;
 
-                createHistory();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
+        Activity activity = getActivity();
+        if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
 
-    private void createHistory() {
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<ResponseBody> loginCall = apiInterface.getHistory();
-        APIClient.callAPI((MasterActivity) getActivity(), loginCall, new APIClient.APICallback() {
-            @Override
-            public void onSuccess(String response) {
-                hideLoader();
+        View contentImage = activity.findViewById(R.id.content_image);
+        if (contentImage != null) {
+            contentImage.animate()
+                    .alpha(targetAlpha)
+                    .setDuration(100)
+                    .start();
+        }
 
-                HistoryPresenter historyPresenter = new HistoryPresenter((MasterActivity) getActivity());
-                ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(historyPresenter);
-
-                try {
-                    List<HistoryModel> historyModelList = new Gson().fromJson(response, new TypeToken<List<HistoryModel>>() {
-                    }.getType());
-                    for (HistoryModel historyModel : historyModelList) {
-                        listRowAdapter.add(historyModel);
-                    }
-
-                    RowHeaderItem cardPresenterHeader = new RowHeaderItem(0, "Shrinathji", Collections.singletonList(historyModelList));
-                    cardPresenterHeader.setDescription("History");
-                    mRowsAdapter.add(new ListRow(cardPresenterHeader, listRowAdapter));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(String error, int responseCode) {
-            }
-
-            @Override
-            public void onError(String error) {
-            }
-        });
-    }
-
-    private void setupUIElements() {
-        setHeadersState(HEADERS_DISABLED);
-        setHeadersTransitionOnBackEnabled(false);
-        if (getActivity() instanceof OnBrowseRowListener) {
-            mCallback = (OnBrowseRowListener) getActivity();
-        } else {
-            throw new ClassCastException(getActivity().toString() + " must implement OnBrowseRowListener");
+        ImageView mainActivityImageView = getActivity().findViewById(R.id.content_image);
+        View rowsContainer = getView().findViewById(androidx.leanback.R.id.scale_frame);
+        if (rowsContainer != null) {
+            int padding_high = getResources().getDimensionPixelSize(R.dimen.content_image_height);
+            int padding_low = getResources().getDimensionPixelSize(R.dimen.low_padding);
+            rowsContainer.setPadding(0, show ? padding_high : padding_low, 0, 0);
+            mainActivityImageView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 }

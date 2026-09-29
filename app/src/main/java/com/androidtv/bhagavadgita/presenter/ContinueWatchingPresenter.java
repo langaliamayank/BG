@@ -8,15 +8,18 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.BaseCardView;
 import androidx.leanback.widget.ImageCardView;
 
+import com.androidtv.bhagavadgita.DetailActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.comman.AudioUtils;
 import com.androidtv.bhagavadgita.model.ChapterModel;
+import com.androidtv.bhagavadgita.model.VersesCache;
 import com.androidtv.bhagavadgita.model.VersesModel;
 import com.androidtv.bhagavadgita.network.APIClient;
 import com.androidtv.bhagavadgita.network.APIInterface;
@@ -35,8 +38,6 @@ import retrofit2.Call;
 public class ContinueWatchingPresenter extends AbstractBasePresenter<BaseCardView> {
     private MasterActivity mContext;
     private ArrayList<VersesModel> mVersesList = new ArrayList<>();
-    private int mSelectedBackgroundColor = -1;
-    private int mDefaultBackgroundColor = -1;
 
     public ContinueWatchingPresenter(MasterActivity context) {
         super(context);
@@ -45,38 +46,11 @@ public class ContinueWatchingPresenter extends AbstractBasePresenter<BaseCardVie
 
     @Override
     protected BaseCardView onCreateView(ViewGroup parent) {
-        mDefaultBackgroundColor =
-                ContextCompat.getColor(getContext(), R.color.colorWhite25);
-        mSelectedBackgroundColor =
-                ContextCompat.getColor(getContext(), R.color.colorBlack50);
-
-        BaseCardView cardView = new BaseCardView(mContext, null, R.style.SideInfoCardStyle) {
-            @Override
-            public void setSelected(boolean selected) {
-                updateCardBackgroundColor(this, selected);
-                super.setSelected(selected);
-            }
-        };
-
-        cardView.setFocusable(true);
+        BaseCardView cardView = new BaseCardView(mContext);
+        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorBlack50));
         cardView.addView(LayoutInflater.from(mContext).inflate(R.layout.card_continue_watching_item, null));
-        cardView.addOnLayoutChangeListener(sLayoutChangeListener);
-        updateCardBackgroundColor(cardView, false);
         return cardView;
     }
-
-    private void updateCardBackgroundColor(BaseCardView view, boolean selected) {
-        int color = selected ? mSelectedBackgroundColor : mDefaultBackgroundColor;
-        view.setBackgroundColor(color);
-    }
-
-    private View.OnLayoutChangeListener sLayoutChangeListener = new View.OnLayoutChangeListener() {
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            v.setPivotY(v.getMeasuredHeight());
-        }
-    };
 
     @Override
     public void onBindViewHolder(Object object, BaseCardView cardView) {
@@ -108,6 +82,17 @@ public class ContinueWatchingPresenter extends AbstractBasePresenter<BaseCardVie
 
             String singleSpacedText = versesModel.getText().replaceAll("(\r?\n)+", "\n").trim();
             ((TextView) cardView.findViewById(R.id.textVerse)).setText(singleSpacedText);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ArrayList<VersesModel> mVersesList = getList();
+                    int mIndex = mVersesList.indexOf(versesModel);
+                    VersesCache.getInstance().setActiveList(mVersesList);
+
+                    mContext.startActivity(DetailActivity.createIntent(mContext, versesModel, mIndex, true));
+                }
+            });
         }
     }
 
@@ -166,17 +151,6 @@ public class ContinueWatchingPresenter extends AbstractBasePresenter<BaseCardVie
             @Override
             public void onError(String error) {
                 if (callback != null) callback.onError(error);
-            }
-        });
-    }
-
-    private void setChildRounded(ImageCardView cardView) {
-        View mainImageView = cardView.getMainImageView();
-        mainImageView.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                int cornerRadius = 13;
-                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), cornerRadius);
             }
         });
     }

@@ -131,24 +131,6 @@ public class GaumatajiSevaListPresenter extends AbstractBasePresenter<BaseCardVi
         }
     }
 
-    public boolean getCurrentPlayback(SongsResultModel songsResultModel) {
-        ExoPlayer player = PlayerManager.getInstance(mContext).getPlayer();
-        MediaItem current = player.getCurrentMediaItem();
-        if (current != null) {
-            MediaCard card = new MediaCard(
-                    current.mediaMetadata.writer != null ? current.mediaMetadata.writer.toString() : "Unknown", "",
-                    current.mediaMetadata.title != null ? current.mediaMetadata.title.toString() : "Unknown",
-                    current.mediaMetadata.artist != null ? current.mediaMetadata.artist.toString() : "Unknown",
-                    current.mediaMetadata.artworkUri);
-
-            if (songsResultModel.getId().equalsIgnoreCase(card.getWriter())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public void stringDecode(TextView textView, String s) {
         try {
             textView.setText(URLDecoder.decode(s.replaceAll("%(?![0-9a-fA-F]{2})", "%25"), "utf-8"));

@@ -41,7 +41,7 @@ import java.util.Map;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class GaumatajiSevaFragment extends VerticalGridSupportFragment implements OnBackPressedListener {
+public class GaumatajiSevaFragment extends VerticalGridSupportFragment  {
     private static final int NUM_COLUMNS = 1;
     private static final int ZOOM_FACTOR = FocusHighlight.ZOOM_FACTOR_NONE;
     private Object object;
@@ -52,7 +52,6 @@ public class GaumatajiSevaFragment extends VerticalGridSupportFragment implement
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((CommanActivity) getActivity()).setOnBackPressedListener(this);
 
         if (savedInstanceState == null) {
             prepareEntranceTransition();
@@ -119,15 +118,5 @@ public class GaumatajiSevaFragment extends VerticalGridSupportFragment implement
         }
 
         setAdapter(arrayObjectAdapter);
-    }
-
-    @Override
-    public void doBack() {
-        try {
-            MasterActivity.selectedPosition = 0;
-            ((CommanActivity) getActivity()).finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

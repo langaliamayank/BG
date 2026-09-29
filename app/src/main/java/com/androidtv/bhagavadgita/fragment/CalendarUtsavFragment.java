@@ -3,68 +3,38 @@ package com.androidtv.bhagavadgita.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.leanback.app.VerticalGridSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.FocusHighlight;
-import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidtv.bhagavadgita.CalendarActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
-import com.androidtv.bhagavadgita.MusicDetailActivity;
-import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
-import com.androidtv.bhagavadgita.calendar.Language;
 import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
 import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.OnBackPressedListener;
-import com.androidtv.bhagavadgita.comman.RowHeaderItem;
 import com.androidtv.bhagavadgita.model.FestivalModel;
-import com.androidtv.bhagavadgita.model.music.album.AlbumModel;
-import com.androidtv.bhagavadgita.model.music.albums.AlbumsResultsModel;
-import com.androidtv.bhagavadgita.model.music.artist.ArtistModel;
-import com.androidtv.bhagavadgita.model.music.artists.ArtistsResultModel;
-import com.androidtv.bhagavadgita.model.music.playlist.PlaylistModel;
-import com.androidtv.bhagavadgita.model.music.playlists.PlaylistsResultModel;
-import com.androidtv.bhagavadgita.model.music.songs.SongsResultModel;
-import com.androidtv.bhagavadgita.network.APIClient;
-import com.androidtv.bhagavadgita.network.APIInterface;
-import com.androidtv.bhagavadgita.pagination.PaginationAdapter;
-import com.androidtv.bhagavadgita.pagination.PostAdapter;
 import com.androidtv.bhagavadgita.presenter.FestivalPresenter;
 import com.androidtv.bhagavadgita.presenter.MyVerticalGridPresenter;
-import com.androidtv.bhagavadgita.presenter.SongsListPresenter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 
 public class CalendarUtsavFragment extends VerticalGridSupportFragment implements OnBackPressedListener{
     private static final int NUM_COLUMNS = 1;

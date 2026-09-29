@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.ColorInt;
@@ -50,10 +51,12 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CalendarActivity extends MasterActivity {
@@ -167,35 +170,26 @@ public class CalendarActivity extends MasterActivity {
         dayEdgeColor(false, findViewById(R.id.imageSP), getColor(R.color.colorShukla));
         dayEdgeColor(false, findViewById(R.id.imageKP), getColor(R.color.colorKrushna));
 
+        verticalGridView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    if (viewPagerCalendar != null && viewPagerCalendar.getAdapter() != null) {
+                        int currentItem = viewPagerCalendar.getCurrentItem();
+                        int totalItems = viewPagerCalendar.getAdapter().getItemCount();
+
+                        if (currentItem + 1 < totalItems) {
+                            viewPagerCalendar.setCurrentItem(currentItem + 1, false);
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
 
         View.OnKeyListener downToGridListener = (v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-//                RecyclerView internalPagerRecycler = (RecyclerView) viewPagerCalendar.getChildAt(0);
-//                if (internalPagerRecycler != null) {
-//                    int currentItem = viewPagerCalendar.getCurrentItem();
-//                    RecyclerView.ViewHolder pageViewHolder =
-//                            internalPagerRecycler.findViewHolderForAdapterPosition(currentItem);
-//
-//                    if (pageViewHolder != null) {
-//                        RecyclerView daysGrid = pageViewHolder.itemView.findViewById(R.id.recyclerViewDays);
-//
-//                        if (daysGrid != null && daysGrid.getAdapter() instanceof CalendarAdapter) {
-//                            CalendarAdapter adapter = (CalendarAdapter) daysGrid.getAdapter();
-//                            int firstDayPos = adapter.getFirstDayPosition();
-//
-//                            if (firstDayPos != -1) {
-//                                RecyclerView.ViewHolder dayViewHolder =
-//                                        daysGrid.findViewHolderForAdapterPosition(firstDayPos);
-//
-//                                if (dayViewHolder != null) {
-//                                    dayViewHolder.itemView.requestFocus();
-//                                    return true;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-
                 RecyclerView daysGrid = findViewById(R.id.recyclerViewDays);
                 if (daysGrid != null && daysGrid.getAdapter() instanceof CalendarAdapter) {
                     CalendarAdapter adapter = (CalendarAdapter) daysGrid.getAdapter();
@@ -243,13 +237,6 @@ public class CalendarActivity extends MasterActivity {
 
         tvMonthTitle = findViewById(R.id.tvMonthTitle);
         tvMonthVS = findViewById(R.id.tvMonthVS);
-    }
-
-    private View getCurrentPageView(int position) {
-        RecyclerView recyclerView = (RecyclerView) viewPagerCalendar.getChildAt(0);
-        RecyclerView.ViewHolder viewHolder =
-                recyclerView.findViewHolderForAdapterPosition(position);
-        return viewHolder != null ? viewHolder.itemView : null;
     }
 
     private void updateHeaderTitle(int position, YearMonth baseMonth) {
@@ -303,32 +290,25 @@ public class CalendarActivity extends MasterActivity {
     private void getTippaniList(LocalDate selectedDate) {
         int vikramSamvatYear = PanchangCalculator
                 .getPanchang(selectedDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET)
-                .getVSYear(); // adjust to your actual method for raw VS year int
+                .getVSYear();
 
         Map<String, FestivalModel> activeFestivalMap = loadTippaniForYear(CalendarActivity.this, vikramSamvatYear);
 
         if (activeFestivalMap != null) {
             YearMonth selectedYearMonth = YearMonth.from(selectedDate);
+            LocalDate today = LocalDate.now();
+            YearMonth currentYearMonth = YearMonth.from(today);
 
-            List<Map.Entry<String, FestivalModel>> filteredList = new ArrayList<>();
+            List<Map.Entry<String, FestivalModel>> monthEntries = new ArrayList<>();
 
+            // 1. Keep ALL items for the selected month
             for (Map.Entry<String, FestivalModel> entry : activeFestivalMap.entrySet()) {
                 String dateKey = entry.getKey(); // "yyyy-MM-dd"
                 if (dateKey != null) {
                     try {
                         LocalDate entryDate = LocalDate.parse(dateKey);
-//                        LocalDate today = LocalDate.now();
-//
-//                        // entryDate is today or in the future
-//                        if (!entryDate.isBefore(today)) {
-//                            // If you also need to ensure it matches the selected YearMonth:
-//                            if (selectedYearMonth == null || YearMonth.from(entryDate).equals(selectedYearMonth)) {
-//                                filteredList.add(entry);
-//                            }
-//                        }
-
                         if (YearMonth.from(entryDate).equals(selectedYearMonth)) {
-                            filteredList.add(entry);
+                            monthEntries.add(entry);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -336,12 +316,38 @@ public class CalendarActivity extends MasterActivity {
                 }
             }
 
-            // Sort chronologically within the month
-            Collections.sort(filteredList, (o1, o2) -> o1.getKey().compareTo(o2.getKey())); // "yyyy-MM-dd" strings sort correctly as plain strings
+            // 2. Sort chronologically from start of month to end of month
+            Collections.sort(monthEntries, (o1, o2) -> o1.getKey().compareTo(o2.getKey()));
 
             List<FestivalModel> festivalList = new ArrayList<>();
-            for (Map.Entry<String, FestivalModel> entry : filteredList) {
+            int targetInitialIndex = -1;
+
+            // 3. Build list & locate initial target position
+            for (int i = 0; i < monthEntries.size(); i++) {
+                Map.Entry<String, FestivalModel> entry = monthEntries.get(i);
                 festivalList.add(entry.getValue());
+
+                // Only check for "today or future" if viewing the current ongoing month
+                if (selectedYearMonth.equals(currentYearMonth) && targetInitialIndex == -1) {
+                    LocalDate entryDate = LocalDate.parse(entry.getKey());
+                    if (!entryDate.isBefore(today)) {
+                        targetInitialIndex = i;
+                    }
+                }
+            }
+
+            // 4. Resolve default index based on whether month is past, current, or future
+            if (selectedYearMonth.isBefore(currentYearMonth)) {
+                // Past month: Always start at the top
+                targetInitialIndex = 0;
+            } else if (selectedYearMonth.isAfter(currentYearMonth)) {
+                // Future month: Always start at the top
+                targetInitialIndex = 0;
+            } else {
+                // Current month: If no upcoming events remain, focus the last event
+                if (targetInitialIndex == -1) {
+                    targetInitialIndex = festivalList.isEmpty() ? 0 : festivalList.size() - 1;
+                }
             }
 
             UpcomingUtsavAdapter upcomingUtsavAdapter = new UpcomingUtsavAdapter(CalendarActivity.this, festivalList);
@@ -354,7 +360,11 @@ public class CalendarActivity extends MasterActivity {
             verticalGridView.setItemAlignmentOffsetPercent(0.0f);
             verticalGridView.setItemSpacing(5);
 
-            verticalGridView.setSelectedPosition(0);
+            // 5. Select and scroll to target position
+            final int initialPosition = Math.max(0, targetInitialIndex);
+            verticalGridView.post(() -> {
+                verticalGridView.setSelectedPosition(initialPosition);
+            });
         }
     }
 
@@ -391,7 +401,7 @@ public class CalendarActivity extends MasterActivity {
 
             viewHolder.textTithi.setText(tithi);
             viewHolder.textDescription.setText(festivalModel.getDescription());
-            viewHolder.textDate.setText(festivalModel.getDate());
+            viewHolder.textDate.setText(formatToOrdinalDate(festivalModel.getDate()));
 
             viewHolder.itemView.setNextFocusLeftId(R.id.selector);
             edgeColor(viewHolder, ContextCompat.getColor(mContext, R.color.colorBlack50));
@@ -481,6 +491,18 @@ public class CalendarActivity extends MasterActivity {
                             }
                         }
                         return true;
+                    }
+
+                    // Go to next page on DPAD_RIGHT
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        if (viewPagerCalendar != null && viewPagerCalendar.getAdapter() != null) {
+                            int currentItem = viewPagerCalendar.getCurrentItem();
+                            int totalItems = viewPagerCalendar.getAdapter().getItemCount();
+                            if (currentItem + 1 < totalItems) {
+                                viewPagerCalendar.setCurrentItem(currentItem + 1, false);
+                                return true;
+                            }
+                        }
                     }
                 }
                 return false;
@@ -691,5 +713,30 @@ public class CalendarActivity extends MasterActivity {
         }
         itemView.setFocusable(true);
         return itemView.requestFocus();
+    }
+
+    public static String formatToOrdinalDate(String dateString) {
+        LocalDate date = LocalDate.parse(dateString);
+        int day = date.getDayOfMonth();
+        String suffix = getDaySuffix(day);
+
+        DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
+        return day + suffix + "\n" + date.format(monthYearFormatter);
+    }
+
+    private static String getDaySuffix(int day) {
+        if (day >= 11 && day <= 13) {
+            return "th";
+        }
+        switch (day % 10) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
     }
 }

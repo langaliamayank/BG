@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ToggleButtonBase">
+        <attr name="image" format="reference"/>
+        <attr name="imageOff" format="reference"/>
+        <attr name="imageOn" format="reference"/>
+        <attr name="textOff" format="string"/>
+        <attr name="textOn" format="string"/>
+        <attr name="desc" format="string"/>
+        <attr name="bindTo" format="reference"/>
+        <attr name="onCheckedChanged" format="string"/>
+        <attr name="left_right_space" format="dimension"/>
+        <attr name="text_gravity" format="string"/>
+    </declare-styleable>
+
+    <dimen name="toggle_button_desc_width">60dp</dimen>
+    <dimen name="toggle_button_width">38dp</dimen>
+    <dimen name="toggle_button_height">38dp</dimen>
+    <dimen name="toggle_button_wrapper_width">60dp</dimen>
+    <dimen name="toggle_button_wrapper_height">60dp</dimen>
+    <dimen name="toggle_button_padding">10dp</dimen>
+    <dimen name="toggle_button_padding2">5dp</dimen>
+    <dimen name="toggle_button_text_size">12sp</dimen>
+</resources>

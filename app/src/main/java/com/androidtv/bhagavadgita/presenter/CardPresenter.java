@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.ImageCardView;
 
+import com.androidtv.bhagavadgita.ChapterVersesActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.comman.Constants;
@@ -118,6 +119,13 @@ public class CardPresenter extends AbstractPresenter<ImageCardView> {
 
             cardView.setTitleText("Chapter " + chapterModel.getChapterNumber());
             cardView.setContentText(chapterModel.getVersesCount() + " Verses");
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mContext.startActivity(ChapterVersesActivity.createIntent(mContext, chapterModel));
+                }
+            });
         }
     }
 

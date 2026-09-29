@@ -186,6 +186,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
                 return false;
             });
         }
+
+
     }
 
     @Override

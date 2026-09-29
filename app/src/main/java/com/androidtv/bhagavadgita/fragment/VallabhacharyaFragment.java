@@ -2,8 +2,6 @@ package com.androidtv.bhagavadgita.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +12,6 @@ import android.view.ViewParent;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
-import androidx.leanback.app.BackgroundManager;
 import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.BaseGridView;
@@ -30,13 +27,10 @@ import com.androidtv.bhagavadgita.comman.Constants;
 import com.androidtv.bhagavadgita.comman.HeaderView;
 import com.androidtv.bhagavadgita.comman.OnBackPressedListener;
 import com.androidtv.bhagavadgita.comman.RowHeaderItem;
-import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
-import com.androidtv.bhagavadgita.model.PushtimargModel;
 import com.androidtv.bhagavadgita.model.VallabhacharyaModel;
 import com.androidtv.bhagavadgita.network.APIClient;
 import com.androidtv.bhagavadgita.network.APIInterface;
-import com.androidtv.bhagavadgita.presenter.MyListRowPresenter;
-import com.androidtv.bhagavadgita.presenter.PushtimargPresenter;
+import com.androidtv.bhagavadgita.presenter.CustomListRowPresenter;
 import com.androidtv.bhagavadgita.presenter.VallabhacharyaPresenter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,41 +44,11 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class VallabhacharyaFragment extends BrowseSupportFragment implements OnBackPressedListener {
+public class VallabhacharyaFragment extends BrowseSupportFragment  {
 
     private ArrayObjectAdapter mRowsAdapter;
     private OnBrowseRowListener mCallback;
     private HeaderView headerView;
-
-    private static final String SPINNER_TAG = "LoadingOverlay";
-    private SpinnerSupportFragment mSpinnerFragment;
-
-//    /*For Background*/
-//    private BackgroundManager backgroundManager;
-//    private final Handler handler = new Handler(Looper.getMainLooper());
-//    private Runnable backgroundRunnable;
-//    private static final int BACKGROUND_UPDATE_DELAY_MS = 300;
-
-    @Override
-    public void doBack() {
-        try {
-            int selectedRowPosition = getRowsSupportFragment().getSelectedPosition();
-
-            MyListRowPresenter.ViewHolder selectedRow = (MyListRowPresenter.ViewHolder) getRowsSupportFragment().getRowViewHolder(selectedRowPosition);
-            int selectedItemPosition = selectedRow.getSelectedPosition();
-
-            if (selectedItemPosition == 0) {
-                ((CommanActivity) getActivity()).switchFragment(new DashboardFragment());
-
-            } else {
-                getRowsSupportFragment().setSelectedPosition(selectedRowPosition, true,
-                        new MyListRowPresenter.SelectItemViewHolderTask(0));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public interface OnBrowseRowListener {
         void onItemSelected(Object item, long index);
@@ -109,44 +73,6 @@ public class VallabhacharyaFragment extends BrowseSupportFragment implements OnB
         return headerView;
     }
 
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-//        // Step 1: Initialize BackgroundManager
-//        backgroundManager = BackgroundManager.getInstance(getActivity());
-//        backgroundManager.attach(getActivity().getWindow());
-//
-//        // Set a fallback background
-//        updateBackgroundColorDelayed(SharePreferenceManager.getString("KEY_THEME_COLOR"));
-
-        int resId = view.getContext().getResources().getIdentifier("scale_frame", "id", view.getContext().getPackageName());
-        View rowsContainer = view.findViewById(resId);
-        if (rowsContainer != null) {
-            int padding = getResources().getDimensionPixelSize(R.dimen.content_image_height);
-            rowsContainer.setPadding(0, padding, 0, 0);
-        }
-
-        prepareEntranceTransition();
-        new Handler(Looper.getMainLooper()).postDelayed(this::startEntranceTransition, Constants.INTERVAL);
-
-        view.post(() -> {
-            if (getRowsSupportFragment() != null) {
-                VerticalGridView vgv = getRowsSupportFragment().getVerticalGridView();
-                if (vgv != null) {
-                    vgv.setItemAnimator(null);
-                    vgv.setClipChildren(false);
-                    vgv.setClipToPadding(false);
-                    vgv.setFocusScrollStrategy(BaseGridView.FOCUS_SCROLL_ALIGNED);
-                    vgv.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_NO_EDGE);
-                    vgv.setWindowAlignmentOffsetPercent(0f);
-                    disableClipping(vgv);
-                }
-            }
-        });
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,60 +80,6 @@ public class VallabhacharyaFragment extends BrowseSupportFragment implements OnB
         setupUIElements();
         setupRowAdapter();
         setupEventListeners();
-    }
-
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//
-//        if (backgroundRunnable != null) {
-//            handler.removeCallbacks(backgroundRunnable);
-//        }
-//    }
-//
-//    private void updateBackgroundColorDelayed(final String hexColor) {
-//        if (backgroundRunnable != null) {
-//            handler.removeCallbacks(backgroundRunnable);
-//        }
-//
-//        backgroundRunnable = () -> {
-//            if (getActivity() == null || hexColor == null || hexColor.isEmpty()) return;
-//
-//            try {
-//                int color = Color.parseColor(hexColor);
-//
-//                // 1. setColor handles solid colors reliably in Leanback
-//                if (backgroundManager != null && backgroundManager.isAttached()) {
-//                    backgroundManager.setColor(color);
-//                }
-//
-//                // 2. Set directly on the window to prevent Leanback from blanking it out
-//                getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(color));
-//
-//            } catch (IllegalArgumentException ignored) {
-//            }
-//        };
-//
-//        handler.postDelayed(backgroundRunnable, BACKGROUND_UPDATE_DELAY_MS);
-//    }
-
-    private void showLoader() {
-        if (getParentFragmentManager().findFragmentByTag(SPINNER_TAG) != null) return;
-        mSpinnerFragment = new SpinnerSupportFragment();
-        getParentFragmentManager().beginTransaction()
-                .add(android.R.id.content, mSpinnerFragment, SPINNER_TAG)
-                .commitAllowingStateLoss();
-    }
-
-    private void hideLoader() {
-        if (!isAdded()) return;
-        Fragment fragment = getParentFragmentManager().findFragmentByTag(SPINNER_TAG);
-        if (fragment != null) {
-            getParentFragmentManager().beginTransaction()
-                    .remove(fragment)
-                    .commitAllowingStateLoss();
-            mSpinnerFragment = null;
-        }
     }
 
     private void updateHeaderVisibility(boolean show) {
@@ -285,9 +157,7 @@ public class VallabhacharyaFragment extends BrowseSupportFragment implements OnB
     }
 
     private void setupRowAdapter() {
-        showLoader();
-
-        MyListRowPresenter selector = new MyListRowPresenter((MasterActivity) getActivity(), 0);
+        CustomListRowPresenter selector = new CustomListRowPresenter((MasterActivity) getActivity());
         mRowsAdapter = new ArrayObjectAdapter(selector);
         setAdapter(mRowsAdapter);
 
@@ -308,8 +178,6 @@ public class VallabhacharyaFragment extends BrowseSupportFragment implements OnB
         APIClient.callAPI((MasterActivity) getActivity(), loginCall, new APIClient.APICallback() {
             @Override
             public void onSuccess(String response) {
-                hideLoader();
-
                 VallabhacharyaPresenter vallabhacharyaPresenter = new VallabhacharyaPresenter((MasterActivity) getActivity());
                 ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(vallabhacharyaPresenter);
 
@@ -340,8 +208,6 @@ public class VallabhacharyaFragment extends BrowseSupportFragment implements OnB
     }
 
     private void setupUIElements() {
-        setHeadersState(HEADERS_DISABLED);
-        setHeadersTransitionOnBackEnabled(false);
         if (getActivity() instanceof OnBrowseRowListener) {
             mCallback = (OnBrowseRowListener) getActivity();
         } else {

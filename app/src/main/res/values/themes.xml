@@ -1,0 +1,81 @@
+<resources>
+
+    <style name="Theme.BhagavadGita" parent="Theme.Leanback">
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:indeterminateTint">@color/colorFocus</item>
+        <item name="cardCornerRadius">@dimen/lb_rounded_rect_corner_radius</item>
+        <item name="browseRowsMarginTop">@dimen/lb_browse_rows_margin_top</item>
+
+        <item name="materialThemeOverlay">@style/Theme.AppCompat</item>
+
+<!--        <item name="browseTitleViewLayout">@layout/custom_header_titleview</item>-->
+    </style>
+
+
+    <style name="Theme.Settings" parent="Theme.Leanback">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Leanback</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/colorTransparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorPrimary">@color/colorTransparent</item> <!--top container-->
+        <item name="android:buttonTint">@color/colorWhite</item> <!--radio button color-->
+        <item name="android:colorControlHighlight">@color/colorTextSecondary</item> <!--selector color-->
+    </style>
+
+    <style name="LeanbackPreference">
+        <item name="android:layout">@layout/leanback_preference</item>
+    </style>
+
+    <style name="DialogTheme" parent="android:Theme.Holo.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
+
+    <style name="Theme.DetailPage" parent="Theme.Leanback">
+        <item name="browseRowsMarginTop">@dimen/_15sdp</item>
+        <item name="android:indeterminateTint">@color/colorGreen</item>
+        <!--        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Leanback</item>-->
+        <!--        <item name="toggleFocusColor">@color/colorAccent</item>-->
+        <!--        <item name="toggleUnfocusColor">@color/colorAccentLight</item>-->
+        <!--        <item name="toggleBackgroundColor">@color/colorBackground</item>-->
+    </style>
+
+    <style name="SideInfoCardStyle" parent="Widget.Leanback.BaseCardViewStyle">
+        <item name="cardType">mainOnly</item>
+        <item name="cardCornerRadius">@dimen/_10sdp</item>
+<!--        <item name="cardBackgroundColor">@color/colorTransparent</item>-->
+    </style>
+
+    <style name="ButtonStyle" parent="Theme.MaterialComponents.Light">
+        <item name="android:background">@drawable/button_selector</item>
+<!--        <item name="android:fontFamily">@font/font</item>-->
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:minHeight">@dimen/_0dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/_8sdp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:padding">@dimen/_5sdp</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="DefaultCardStyle" parent="Widget.Leanback.ImageCardViewStyle">
+        <item name="cardType">mainOnly</item>
+        <item name="cardCornerRadius">@dimen/_5sdp</item>
+    </style>
+
+    <style name="TabAppTheme" parent="@style/Theme.AppCompat">
+        <item name="android:foreground">@null</item>
+        <item name="tabIndicator">@null</item>
+    </style>
+
+    <style name="PosterStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/lb_rounded_rect_corner_radius</item>
+    </style>
+
+</resources>

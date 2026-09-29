@@ -1,9 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imagePrev"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:alpha="0.3"
+        android:src="@drawable/ic_action_back" />
 
     <LinearLayout
         android:id="@+id/parentContainer"
@@ -30,6 +39,7 @@
                 android:focusable="true"
                 android:minHeight="@dimen/_0dp"
                 android:padding="@dimen/_3sdp"
+                android:visibility="gone"
                 android:text="PREVIOUS" />
 
             <TextView
@@ -152,29 +162,9 @@
                 android:focusable="true"
                 android:minHeight="@dimen/_0dp"
                 android:padding="@dimen/_3sdp"
+                android:visibility="gone"
                 android:text="NEXT" />
 
-            <!--                <ImageView-->
-            <!--                    android:id="@+id/btnPrev"-->
-            <!--                    android:layout_width="@dimen/_24sdp"-->
-            <!--                    android:layout_height="@dimen/_24sdp"-->
-            <!--                    android:background="@drawable/bg_calendar_cell_selector"-->
-            <!--                    android:clickable="true"-->
-            <!--                    android:focusable="true"-->
-            <!--                    android:focusableInTouchMode="true"-->
-            <!--                    android:nextFocusRight="@+id/utsav_container"-->
-            <!--                    android:src="@drawable/ic_action_backward" />-->
-            <!--                -->
-            <!--                <ImageView-->
-            <!--                    android:id="@+id/btnNext"-->
-            <!--                    android:layout_width="@dimen/_24sdp"-->
-            <!--                    android:layout_height="@dimen/_24sdp"-->
-            <!--                    android:background="@drawable/bg_calendar_cell_selector"-->
-            <!--                    android:clickable="true"-->
-            <!--                    android:focusable="true"-->
-            <!--                    android:focusableInTouchMode="true"-->
-            <!--                    android:nextFocusRight="@+id/utsav_container"-->
-            <!--                    android:src="@drawable/ic_action_forward" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -336,4 +326,15 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageNext"
+        android:layout_alignParentRight="true"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:alpha="0.3"
+        android:rotation="180"
+        android:src="@drawable/ic_action_back" />
+
+</RelativeLayout>

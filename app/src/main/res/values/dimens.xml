@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="lb_preference_decor_title_margin_start">24dp</dimen>
+    <dimen name="lb_preference_category_height">48dp</dimen>
+    <dimen name="cardview_default_radius">@dimen/_3sdp</dimen>
+
+    <integer name="lb_playback_controls_show_time_ms">7000</integer>
+    <integer name="lb_playback_controls_tickle_timeout_ms">7000</integer>
+
+    <dimen name="_0dp">0dp</dimen>
+    <dimen name="_0.5dp">0.5dp</dimen>
+    <dimen name="_0.7dp">0.7dp</dimen>
+    <dimen name="_200dp">@dimen/_200sdp</dimen>
+    <dimen name="_178dp">@dimen/_178sdp</dimen>
+    <dimen name="_100dp">@dimen/_100sdp</dimen>
+
+    <dimen name="landscape_poster_width">400px</dimen>
+    <dimen name="landscape_poster_height">225px</dimen>
+
+    <dimen name="content_image_gradient_size">75dp</dimen>
+    <dimen name="content_image_width">1067px</dimen>
+    <dimen name="content_image_height">600px</dimen>
+    <dimen name="low_padding">@dimen/_25sdp</dimen>
+
+    <!-- Adjust these values to match your preferred UI layout -->
+    <dimen name="navigation_drawer_collapsed_width">100px</dimen>
+    <dimen name="navigation_drawer_expanded_width">400px</dimen>
+
+<!--    <dimen name="lb_browse_item_horizontal_margin">24dp</dimen>-->
+
+<!--    <dimen name="lb_browse_item_vertical_margin">8dp</dimen>-->
+
+    <!--    <dimen name="lb_browse_expanded_row_no_hovercard_bottom_padding">0px</dimen>-->
+    <!--    <dimen name="lb_browse_expanded_selected_row_top_padding">0px</dimen>-->
+    <!--    <dimen name="lb_browse_selected_row_top_padding">0px</dimen>-->
+    <dimen name="lb_browse_item_vertical_spacing">0px</dimen>
+    <dimen name="lb_browse_rows_margin_top">82px</dimen>
+    <dimen name="lb_basic_card_info_padding">0px</dimen>
+    <dimen name="lb_rounded_rect_corner_radius">@dimen/_3sdp</dimen>
+
+    <dimen name="lb_browse_padding_top">0dp</dimen>
+
+    <dimen name="lb_browse_expanded_row_no_hovercard_bottom_padding">0px</dimen>
+    <dimen name="lb_browse_expanded_selected_row_top_padding">0px</dimen>
+    <dimen name="lb_browse_selected_row_top_padding">0px</dimen>
+    <!--    <dimen name="lb_browse_item_vertical_spacing">0px</dimen>-->
+
+    <!--    <dimen name="lb_browse_rows_margin_top">0px</dimen>-->
+    <dimen name="lb_browse_padding_start">56dp</dimen>
+    <!--    <dimen name="lb_browse_header_label_fontsize">26px</dimen>-->
+    <!--    <dimen name="lb_browse_headers_vertical_spacing">21dp</dimen>-->
+    <item name="lb_browse_header_unselect_alpha" type="fraction">25%</item>
+
+
+    <dimen name="lb_playback_controls_padding_bottom">140dp</dimen> <!--default 28dp-->
+    <!--    <dimen name="lb_playback_other_rows_center_to_bottom">270dp</dimen>-->
+    <dimen name="lb_playback_transport_progressbar_bar_height">2dp</dimen>
+</resources>

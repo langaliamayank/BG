@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/button"
+            style="?attr/playbackControlsButtonStyle"
+            android:layout_width="@dimen/lb_control_button_height"
+            android:layout_height="@dimen/lb_control_button_height"
+            android:scaleType="center"
+            android:src="@drawable/lb_control_button_selector" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/lb_control_icon_width"
+            android:layout_height="@dimen/lb_control_icon_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/container"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

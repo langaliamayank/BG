@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="@dimen/_300sdp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:layout_marginRight="@dimen/_30sdp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_centerInParent="true"
+            app:cardBackgroundColor="@color/colorWhite10"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardElevation="@dimen/_0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/_30sdp"
+                android:paddingRight="@dimen/_30sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/_100sdp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="Now playing"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/colorTextPrimary" />
+
+                    <TextView
+                        android:id="@+id/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/app_name"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.media3.ui.DefaultTimeBar
+                            android:id="@+id/exo_progress"
+                            android:layout_width="@dimen/_0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:importantForAccessibility="no"
+                            app:buffered_color="@color/colorWhite"
+                            app:layout_anchorGravity="bottom|center"
+                            app:played_color="@color/colorFocus"
+                            app:scrubber_color="@color/colorFocus"
+                            app:scrubber_drawable="@drawable/ic_action_shankha"
+                            app:unplayed_color="@color/colorTextSecondary" />
+
+                        <TextView
+                            android:id="@id/exo_position"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:00"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+                            android:textColor="@color/colorTextSecondary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.androidtv.bhagavadgita.comman.ToggleButtonBase
+                            android:id="@id/exo_play"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:desc="Play"
+                            app:imageOff="@drawable/ic_action_play"
+                            app:imageOn="@drawable/ic_action_play"
+                            app:text_gravity="bottom" />
+
+                        <com.androidtv.bhagavadgita.comman.ToggleButtonBase
+                            android:id="@id/exo_pause"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:desc="Pause"
+                            app:imageOff="@drawable/ic_action_pause"
+                            app:imageOn="@drawable/ic_action_pause"
+                            app:text_gravity="bottom">
+
+                            <requestFocus />
+                        </com.androidtv.bhagavadgita.comman.ToggleButtonBase>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:cardBackgroundColor="@color/colorFocus"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardElevation="@dimen/_0dp">
+
+            <ImageView
+                android:id="@+id/imageview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

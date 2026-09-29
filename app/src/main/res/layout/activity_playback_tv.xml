@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+    <!-- Hide TextureView during audio playback so it doesn't render black -->
+    <TextureView
+        android:id="@+id/texture_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!-- 1. Full-screen background artwork -->
+    <ImageView
+        android:id="@+id/iv_audio_artwork_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside" />
+
+    <!-- 2. Palette Gradient overlay View -->
+    <View
+        android:id="@+id/v_palette_gradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- 4. Playback Controls Fragment -->
+    <fragment
+        android:id="@+id/playback_controls_fragment"
+        android:name="com.androidtv.bhagavadgita.playback.PlaybackVideoFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="playback" />
+
+</RelativeLayout>

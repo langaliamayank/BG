@@ -1,15 +1,20 @@
 package com.androidtv.bhagavadgita.presenter;
 
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.BaseCardView;
 
+import com.androidtv.bhagavadgita.CalendarActivity;
+import com.androidtv.bhagavadgita.CommanActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
@@ -23,8 +28,6 @@ import java.util.ArrayList;
 
 public class MorePresenter extends AbstractBasePresenter<BaseCardView> {
     private MasterActivity mContext;
-    private int mSelectedBackgroundColor = -1;
-    private int mDefaultBackgroundColor = -1;
 
     public MorePresenter(MasterActivity context) {
         super(context);
@@ -33,57 +36,11 @@ public class MorePresenter extends AbstractBasePresenter<BaseCardView> {
 
     @Override
     protected BaseCardView onCreateView(ViewGroup parent) {
-        mDefaultBackgroundColor =
-                ContextCompat.getColor(getContext(), R.color.colorBlack50);
-        mSelectedBackgroundColor =
-                ContextCompat.getColor(getContext(), R.color.colorTransparent);
-
-        BaseCardView cardView = new BaseCardView(mContext) {
-            @Override
-            public void setSelected(boolean selected) {
-                updateCardBackgroundColor(this, selected);
-                super.setSelected(selected);
-            }
-        };
-
-        cardView.setFocusable(true);
+        BaseCardView cardView = new BaseCardView(mContext);
+        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorBlack50));
         cardView.addView(LayoutInflater.from(mContext).inflate(R.layout.card_action_item, null));
-        cardView.addOnLayoutChangeListener(sLayoutChangeListener);
-
-        // --- Calculate width for exactly 4 cards visible ---
-        int parentWidth = parent.getWidth();
-        if (parentWidth <= 0) {
-            parentWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-        }
-
-        // Account for Leanback left/right padding + inter-item spacing (adjust dp values to match your theme)
-        int horizontalPadding = parent.getPaddingLeft() + parent.getPaddingRight();
-        int itemSpacing = (int) (16 * mContext.getResources().getDisplayMetrics().density); // e.g. 16dp spacing
-        int totalSpacing = horizontalPadding + (itemSpacing * 3); // 3 gaps between 4 items
-
-        int itemWidth = (parentWidth - totalSpacing) / 4;
-
-        // Apply calculated width to the BaseCardView
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-        cardView.setLayoutParams(params);
-
-        updateCardBackgroundColor(cardView, false);
         return cardView;
     }
-
-
-    private void updateCardBackgroundColor(BaseCardView view, boolean selected) {
-        int color = selected ? mSelectedBackgroundColor : mDefaultBackgroundColor;
-        view.setBackgroundColor(color);
-    }
-
-    private View.OnLayoutChangeListener sLayoutChangeListener = new View.OnLayoutChangeListener() {
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            v.setPivotY(v.getMeasuredHeight());
-        }
-    };
 
     @Override
     public void onBindViewHolder(Object object, BaseCardView cardView) {
@@ -93,6 +50,29 @@ public class MorePresenter extends AbstractBasePresenter<BaseCardView> {
 
             ((ImageView) cardView.findViewById(R.id.action_icon)).setImageResource(actionModel.getIcon());
             ((TextView) cardView.findViewById(R.id.action_text)).setText(actionModel.getTitle());
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    long id = actionModel.getId();
+
+                    switch ((int) id) {
+                        case 0:
+                        case 2:
+                        case 4:
+                            mContext.startActivity(CommanActivity.createIntent(mContext, actionModel));
+                            return;
+
+                        case 6:
+                            mContext.startActivity(new Intent(mContext, CalendarActivity.class));
+                            return;
+
+                        default:
+                            Toast.makeText(mContext, actionModel.getTitle() + " Coming Soon", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            });
         }
     }
 

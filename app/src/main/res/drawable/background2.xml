@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- A) Base maroon->black linear gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="270"
+                android:startColor="#3E1010"
+            android:endColor="#000000"/>
+        </shape>
+    </item>
+
+    <!-- B) Golden radial aura (right side, behind poster/title) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="0.70"
+                android:centerY="0.40"
+                android:gradientRadius="900dp"
+                android:startColor="#33FFD700"
+            android:centerColor="#19FFD700"
+            android:endColor="#00FFD700"/>  <!-- Transparent -->
+        </shape>
+    </item>
+
+    <!-- C) Soft vignette on edges for depth -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="0.50"
+                android:centerY="0.50"
+                android:gradientRadius="1200dp"
+                android:startColor="#00000000"
+                android:endColor="#26000000"/>  <!-- 15% black -->
+        </shape>
+    </item>
+
+</layer-list>

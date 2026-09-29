@@ -7,43 +7,56 @@
         android:id="@+id/utsavContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_5sdp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
 
-        <TextView
-            android:id="@+id/textTitle"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:textColor="@color/colorLightGray"
-            android:textSize="@dimen/_6sdp"
-            android:textStyle="bold" />
+            android:background="@drawable/ic_action_box"
+            android:orientation="horizontal"
+            android:padding="@dimen/_3sdp">
 
-        <TextView
-            android:id="@+id/textTithi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textTitle"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:textColor="@color/colorFocus"
-            android:textStyle="bold"
-            android:textSize="@dimen/_5sdp" />
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorFocus"
+                android:textSize="@dimen/_5sdp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/_5sdp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/textDate"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_5sdp"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/_5sdp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="@dimen/_6sdp" />
+
+            <TextView
+                android:id="@+id/textTithi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="@dimen/_5sdp" />
+
+            <TextView
+                android:id="@+id/textDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="@dimen/_5sdp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

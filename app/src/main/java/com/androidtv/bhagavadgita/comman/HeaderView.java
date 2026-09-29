@@ -30,6 +30,9 @@ import androidx.leanback.widget.VerticalGridView;
 
 import com.androidtv.bhagavadgita.MasterActivity;
 import com.androidtv.bhagavadgita.R;
+import com.androidtv.bhagavadgita.calendar.CalendarUtils;
+import com.androidtv.bhagavadgita.calendar.Language;
+import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
 import com.androidtv.bhagavadgita.model.ChapterModel;
 import com.androidtv.bhagavadgita.model.DarshanModel;
 import com.androidtv.bhagavadgita.model.FestivalModel;
@@ -45,6 +48,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -98,10 +102,11 @@ public class HeaderView extends RelativeLayout implements TitleViewAdapter.Provi
 
     private TitleViewAdapter createAdapter() {
         return new TitleViewAdapter() {
-            @NonNull
+            @Nullable
             @Override
             public View getSearchAffordanceView() {
-                return new View(getContext());
+//                return new View(getContext());
+                return null;
             }
 
             @Override
@@ -156,7 +161,7 @@ public class HeaderView extends RelativeLayout implements TitleViewAdapter.Provi
 
         SimpleDateFormat df2 = new SimpleDateFormat("EEEE dd MMM, yyyy");
         String formattedTime = df2.format(c.getTime());
-        txtDayDate.setText(formattedTime);
+        txtDayDate.setText(formattedTime + "\n" + PanchangCalculator.getPanchang(LocalDate.now(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getTithi());
     }
 
     /**

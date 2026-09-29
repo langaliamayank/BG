@@ -15,7 +15,7 @@
             android:layout_width="@dimen/_8sdp"
             android:layout_height="@dimen/_8sdp"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/_minus3sdp"
+            android:layout_marginTop="@dimen/_minus1sdp"
             android:layout_marginRight="@dimen/_5sdp" />
 
         <LinearLayout
@@ -35,7 +35,7 @@
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/imageEvent"
                 android:layout_width="@dimen/_5sdp"
                 android:layout_height="@dimen/_5sdp"
@@ -57,7 +57,7 @@
             android:paddingRight="@dimen/_5sdp"
             android:text="@string/app_name"
             android:textColor="@color/colorGray"
-            android:textSize="@dimen/_4sdp" />
+            android:textSize="@dimen/_5sdp" />
 
     </RelativeLayout>
 
