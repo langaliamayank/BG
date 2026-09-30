@@ -1,7 +1,7 @@
 package com.androidtv.bhagavadgita.adapter;
 
-import static com.androidtv.bhagavadgita.fragment.CalendarFragment.verticalGridView;
-import static com.androidtv.bhagavadgita.fragment.CalendarFragment.viewPagerCalendar;
+import static com.androidtv.bhagavadgita.CalendarActivity.verticalGridView;
+import static com.androidtv.bhagavadgita.CalendarActivity.viewPagerCalendar;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -18,12 +18,14 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidtv.bhagavadgita.CalendarActivity;
-import com.androidtv.bhagavadgita.MasterActivity;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
+import com.androidtv.bhagavadgita.calendar.Language;
 import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
 import com.androidtv.bhagavadgita.comman.ColorUtils;
+import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
+import com.androidtv.bhagavadgita.fragment.CalendarMonthFragment;
 import com.androidtv.bhagavadgita.model.DayModel;
 import com.androidtv.bhagavadgita.model.FestivalModel;
 
@@ -35,16 +37,17 @@ import java.util.Locale;
 public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdapter.UtsavViewHolder> {
 
     private List<FestivalModel> mList;
-    private MasterActivity mContext;
+    private CalendarActivity mContext;
 
-    public UpcomingUtsavAdapter(MasterActivity context, List<FestivalModel> listItems) {
+    public UpcomingUtsavAdapter(CalendarActivity context, List<FestivalModel> listItems) {
         mContext = context;
         mList = listItems;
     }
 
     @Override
     public UtsavViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.card_calendar_event_item, viewGroup, false);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.card_calendar_event_item, viewGroup, false);
         return new UtsavViewHolder(view);
     }
 
@@ -57,7 +60,7 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
         try {
             LocalDate localDate = LocalDate.parse(festivalModel.getDate()); // expects "yyyy-MM-dd"
             tithi = PanchangCalculator.getPanchang(
-                    localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getCompactDescription();
+                    localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getCompactDescription(Language.ENGLISH);
         } catch (Exception e) {
             tithi = "";
         }
@@ -67,11 +70,11 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
         viewHolder.textDate.setText(formatToOrdinalDate(festivalModel.getDate()));
 
         viewHolder.itemView.setNextFocusLeftId(R.id.selector);
-        edgeColor(viewHolder, ContextCompat.getColor(mContext, R.color.colorBlack50));
+        edgeColor(viewHolder, ContextCompat.getColor(mContext, R.color.colorCard));
         viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                edgeColor(viewHolder, ContextCompat.getColor(mContext, hasFocus ? R.color.colorWhite : R.color.colorBlack50));
+                edgeColor(viewHolder, ContextCompat.getColor(mContext, hasFocus ? R.color.colorWhite : R.color.colorCard));
 
                 if (mContext instanceof CalendarActivity) {
                     if (hasFocus) {
@@ -83,31 +86,10 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
             }
         });
 
-//          Selected Jump to First Active Day of the Month
-//            viewHolder.itemView.setOnKeyListener((v, keyCode, event) -> {
-//                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-//                    RecyclerView daysGrid = mContext.findViewById(R.id.recyclerViewDays);
-//                    if (daysGrid != null) {
-//                        int childCount = daysGrid.getChildCount();
-//                        for (int i = 0; i < childCount; i++) {
-//                            View child = daysGrid.getChildAt(i);
-//                            View selector = child.findViewById(R.id.selector);
-//                            if (child.getVisibility() == View.VISIBLE && selector != null && selector.isFocusable()) {
-//                                selector.requestFocus();
-//                                return true;
-//                            }
-//                        }
-//                    }
-//                }
-//                return false;
-//            });
-
-        // Jump to Selected/Today's Date
         viewHolder.itemView.setOnKeyListener((v, keyCode, event) -> {
 
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
 
-                // Loop from last item back to first item
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                     if (position == getItemCount() - 1 && getItemCount() > 0) {
                         verticalGridView.setSelectedPositionSmooth(0);
@@ -122,41 +104,27 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
                     }
                 }
 
-                // Jump to Selected/Today's Date on DPAD_LEFT
-                if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    RecyclerView daysGrid = mContext.findViewById(R.id.recyclerViewDays);
-                    if (daysGrid != null && daysGrid.getAdapter() instanceof CalendarAdapter) {
-                        CalendarAdapter adapter = (CalendarAdapter) daysGrid.getAdapter();
-                        List<DayModel> list = adapter.getDaysList();
-
-                        int targetIndex = -1;
-                        for (int i = 0; i < list.size(); i++) {
-                            DayModel day = list.get(i);
-                            if (day != null && day.isToday()) {
-                                targetIndex = i;
-                                break;
+                if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                    if (position == 0 && getItemCount() > 0) {
+                        verticalGridView.setSelectedPositionSmooth(getItemCount() - 1);
+                        // Use post to ensure focus shifts after layout passes
+                        verticalGridView.post(() -> {
+                            RecyclerView.ViewHolder firstVh = verticalGridView.findViewHolderForAdapterPosition(0);
+                            if (firstVh != null) {
+                                firstVh.itemView.requestFocus();
                             }
-                        }
-
-                        if (targetIndex == -1) {
-                            targetIndex = adapter.getFirstDayPosition();
-                        }
-
-                        if (targetIndex != -1) {
-                            RecyclerView.ViewHolder vh = daysGrid.findViewHolderForAdapterPosition(targetIndex);
-                            if (vh != null) {
-                                View selector = vh.itemView.findViewById(R.id.selector);
-                                if (selector != null) {
-                                    selector.requestFocus();
-                                    return true;
-                                }
-                            }
-                        }
+                        });
+                        return true;
                     }
-                    return true;
                 }
 
-                // Go to next page on DPAD_RIGHT
+                if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    if (mContext instanceof CalendarActivity) {
+                        ((CalendarActivity) mContext).focusFirstDayOfCurrentPage();
+                        return true;
+                    }
+                }
+
                 if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     if (viewPagerCalendar != null && viewPagerCalendar.getAdapter() != null) {
                         int currentItem = viewPagerCalendar.getCurrentItem();
@@ -177,6 +145,18 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
         return mList.size();
     }
 
+    public void edgeColor(UtsavViewHolder holder, @ColorInt int color) {
+        LayerDrawable layerDrawable = (LayerDrawable) holder.itemView.getBackground();
+        GradientDrawable leftEdge = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.leftEdge);
+        leftEdge.mutate();
+        leftEdge.setColor(color);
+
+        String rightEdgeColor = SharePreferenceManager.getString("KEY_THEME_COLOR");
+        GradientDrawable rightEdge = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.rightEdge);
+        rightEdge.mutate();
+        rightEdge.setColor(ColorUtils.darken(Color.parseColor(rightEdgeColor), 0.1f));
+    }
+
     class UtsavViewHolder extends RecyclerView.ViewHolder {
         private TextView textTitle, textTithi, textDescription, textDate;
 
@@ -190,18 +170,6 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
             itemView.setBackgroundResource(R.drawable.bg_calendar);
             itemView.setFocusable(true);
         }
-    }
-
-    public void edgeColor(UtsavViewHolder holder, @ColorInt int color) {
-        LayerDrawable layerDrawable = (LayerDrawable) holder.itemView.getBackground();
-        GradientDrawable leftEdge = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.leftEdge);
-        leftEdge.mutate();
-        leftEdge.setColor(color);
-
-        String rightEdgeColor = SharePreferenceManager.getString("KEY_THEME_COLOR");
-        GradientDrawable rightEdge = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.rightEdge);
-        rightEdge.mutate();
-        rightEdge.setColor(ColorUtils.darken(Color.parseColor(rightEdgeColor), 0.1f));
     }
 
     public static String formatToOrdinalDate(String dateString) {

@@ -7,10 +7,6 @@ import android.os.Handler;
 import androidx.leanback.app.VerticalGridSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.FocusHighlight;
-import androidx.leanback.widget.OnItemViewSelectedListener;
-import androidx.leanback.widget.Presenter;
-import androidx.leanback.widget.Row;
-import androidx.leanback.widget.RowPresenter;
 
 import com.androidtv.bhagavadgita.CalendarActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
@@ -37,10 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CalendarUtsavFragment extends VerticalGridSupportFragment implements OnBackPressedListener{
-    private static final int NUM_COLUMNS = 1;
-    private static final int ZOOM_FACTOR = FocusHighlight.ZOOM_FACTOR_SMALL;
-    private static final String ARG_SELECTED_DATE = "arg_selected_date";
 
+    private static final String ARG_SELECTED_DATE = "arg_selected_date";
     private LocalDate selectedDate;
 
     public static CalendarUtsavFragment newInstance(LocalDate date) {
@@ -74,44 +68,10 @@ public class CalendarUtsavFragment extends VerticalGridSupportFragment implement
             selectedDate = LocalDate.now();
         }
 
-        MyVerticalGridPresenter myVerticalGridPresenter = new MyVerticalGridPresenter(ZOOM_FACTOR, false);
-        myVerticalGridPresenter.setNumberOfColumns(NUM_COLUMNS);
+        MyVerticalGridPresenter myVerticalGridPresenter = new MyVerticalGridPresenter();
         setGridPresenter(myVerticalGridPresenter);
 
-//        getView().setLayoutParams(new ViewGroup.MarginLayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT)); // or a fixed height
-
-//        postAdapter = new PostAdapter(getActivity(), new SongsListPresenter(getActivity(), 1), "tag");
-//        setAdapter(postAdapter);
-
-//        object = getActivity().getIntent().getSerializableExtra("DATA");
-//        if (object instanceof ArtistsResultModel) {
-////            artistsResultModel = (ArtistsResultModel) object;
-////            getArtistsDataList(artistsResultModel.getId(), currentPage);
-//        }
-
         getTippaniList(selectedDate);
-
-        setOnItemViewSelectedListener(new OnItemViewSelectedListener() {
-            @Override
-            public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object
-                    item, RowPresenter.ViewHolder rowViewHolder, Row row) {
-//                if (item instanceof SongsResultModel) {
-//                    ArrayList<SongsResultModel> posts = (ArrayList<SongsResultModel>) postAdapter.getAllItems();
-//                    int itemIndex = postAdapter.indexOf(item);
-//                    int minimumIndex = posts.size() - NUM_COLUMNS;
-//
-//                    if (currentPage != 0) {
-//                        currentPage += 1;
-//                    }
-//
-////                    if (itemIndex >= minimumIndex && postAdapter.shouldLoadNextPage()) {
-////                        getArtistsDataList(artistsResultModel.getId(), currentPage);
-////                    }
-//                }
-            }
-        });
     }
 
     public static Map<String, FestivalModel> loadTippaniForYear(Context context, int vikramSamvatYear) {
@@ -191,113 +151,4 @@ public class CalendarUtsavFragment extends VerticalGridSupportFragment implement
             e.printStackTrace();
         }
     }
-
-//    private void getTippaniList() {
-//        int vikramSamvatYear = PanchangCalculator
-//                .getPanchang(selectedDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET)
-//                .getVSYear(); // adjust to your actual method for raw VS year int
-//
-//        Map<String, FestivalModel> activeFestivalMap = loadTippaniForYear(requireActivity(), vikramSamvatYear);
-//
-//        FestivalPresenter festivalPresenter = new FestivalPresenter((MasterActivity) getActivity());
-//        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(festivalPresenter);
-//
-//        if (activeFestivalMap != null) {
-//            String selectedDateKey = selectedDate.toString(); // LocalDate.toString() = "yyyy-MM-dd", matches your JSON keys directly
-//
-//            FestivalModel festivalModel = activeFestivalMap.get(selectedDateKey);
-//
-//            if (festivalModel != null) {
-//                listRowAdapter.add(festivalModel);
-//                LogTag.e("TippaniDebug Selected date match: " + festivalModel.getTitle() + " (" + selectedDateKey + ")");
-//            } else {
-//                LogTag.e("TippaniDebug No festival found for: " + selectedDateKey);
-//            }
-//        }
-//
-//        setAdapter(listRowAdapter);
-//    }
-
-//    private void getTippaniList() {
-//        Map<String, FestivalModel> activeFestivalMap = loadTippaniForYear(requireActivity(), 2083);
-//
-//        FestivalPresenter festivalPresenter = new FestivalPresenter((MasterActivity) getActivity());
-//        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(festivalPresenter);
-//
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-//
-//        if (activeFestivalMap != null) {
-//            try {
-//                // Normalize today's date to 00:00:00 so it matches the parsed JSON date keys perfectly
-//                String todayStr = selectedDate.toString();
-//                Date todayDate = sdf.parse(todayStr);
-//
-//                List<Map.Entry<String, FestivalModel>> filteredList = new ArrayList<>();
-//
-//                for (Map.Entry<String, FestivalModel> entry : activeFestivalMap.entrySet()) {
-//                    String dateKey = entry.getKey(); // e.g., "2026-08-28"
-//                    FestivalModel festivalModel = entry.getValue();
-//
-//                    if (dateKey != null) {
-//                        Date festivalDate = sdf.parse(dateKey);
-//
-//                        // Compare calendar days safely (includes today and future dates)
-//                        if (festivalDate != null && !festivalDate.before(todayDate)) {
-//                            filteredList.add(entry);
-//                            LogTag.e("TippaniDebug Added to Adapter: " + festivalModel.getTitle() + " (" + dateKey + ")");
-//                        }
-//                    }
-//                }
-//
-//                // Sort filtered items chronologically by date
-//                Collections.sort(filteredList, new Comparator<Map.Entry<String, FestivalModel>>() {
-//                    @Override
-//                    public int compare(Map.Entry<String, FestivalModel> o1, Map.Entry<String, FestivalModel> o2) {
-//                        try {
-//                            Date d1 = sdf.parse(o1.getKey());
-//                            Date d2 = sdf.parse(o2.getKey());
-//                            if (d1 != null && d2 != null) {
-//                                return d1.compareTo(d2);
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                        return 0;
-//                    }
-//                });
-//
-//                // Add sorted items to the Leanback adapter
-//                for (Map.Entry<String, FestivalModel> sortedEntry : filteredList) {
-//                    listRowAdapter.add(sortedEntry.getValue());
-//                }
-//
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//
-//        setAdapter(listRowAdapter);
-//
-////        pendingRows.put(index, new ListRow(cardPresenterHeader, listRowAdapter));
-////
-////        checkAndCommitRows();
-//    }
-
-//    @Override
-//    public void doBack() {
-//        try {
-//            MasterActivity.selectedPosition = 0;
-//            ((MusicDetailActivity) getActivity()).finish();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (postAdapter != null) {
-//            postAdapter.notifyArrayItemRangeChanged(0, postAdapter.size());
-//        }
-//    }
 }

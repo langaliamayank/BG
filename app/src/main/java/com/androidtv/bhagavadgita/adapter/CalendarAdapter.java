@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
+import com.androidtv.bhagavadgita.calendar.Language;
 import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
 import com.androidtv.bhagavadgita.comman.ColorUtils;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
@@ -90,7 +91,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         holder.imageAP.setImageDrawable(null);
         holder.imageEvent.setImageDrawable(null);
 
-        holder.tvPrimaryDate.setText(day.getPrimaryDate());
+        holder.tvPrimaryDate.setText(day.getEnglishDate());
 
         boolean isShuklaPaksh = PanchangCalculator.getPanchang(
                 day.getDate(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
@@ -104,7 +105,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
         holder.tvDescription.setText(PanchangCalculator.getPanchang(
                 day.getDate(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
-        ).getTithi());
+        ).getTithi(Language.ENGLISH));
 
         // --- Current-month cells: always focusable, so grid nav works everywhere ---
         holder.selector.setFocusable(true);
@@ -121,7 +122,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         }
 
         if (day.isSunday()) {
-            holder.tvPrimaryDate.setTextColor(Color.RED);
+            holder.tvPrimaryDate.setTextColor(ContextCompat.getColor(holder.childLayout.getContext(), R.color.colorRed));
         }
 
         if (day.isToday()) {
@@ -222,7 +223,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         String rightEdgeColor = SharePreferenceManager.getString("KEY_THEME_COLOR");
         GradientDrawable rightEdge = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.rightEdge);
         rightEdge.mutate();
-        rightEdge.setColor(ColorUtils.darken(Color.parseColor(rightEdgeColor), 0.1f));
+        rightEdge.setColor(ColorUtils.whiten(Color.parseColor(rightEdgeColor), 0.1f));
     }
 
     public void todayEdgeColor(CalendarViewHolder holder, @ColorInt int color) {

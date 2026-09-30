@@ -78,13 +78,11 @@ public class CalendarMonthFragment extends Fragment {
 
         calendarAdapter.setOnPageChangeListener(new CalendarAdapter.OnPageChangeListener() {
             @Override
-            public void onNextPageRequested(int focusedRow) {
-                goToPage(focusedRow, +1);
-            }
+            public void onNextPageRequested(int focusedRow) {goToPage(+1);}
 
             @Override
             public void onPrevPageRequested(int focusedRow) {
-                goToPage(focusedRow, -1);
+                goToPage(-1);
             }
         });
 
@@ -92,7 +90,7 @@ public class CalendarMonthFragment extends Fragment {
         recyclerView.post(this::requestFocusOnCurrentDay);
     }
 
-    private void goToPage(int focusedRow, int direction) {
+    private void goToPage(int direction) {
         ViewPager2 pager = requireActivity().findViewById(R.id.viewPagerCalendar);
         if (pager != null) {
             // MUST BE FALSE for Android TV to prevent focus drop during animation
@@ -161,50 +159,6 @@ public class CalendarMonthFragment extends Fragment {
 
         recyclerView.scrollToPosition(finalTargetPos);
     }
-
-//    public void requestFocusOnFirstDay() {
-//        if (recyclerView == null) return;
-//
-//        CalendarAdapter adapter = (CalendarAdapter) recyclerView.getAdapter();
-//        if (adapter == null) return;
-//
-//        int targetPosition = adapter.getFirstDayPosition();
-//        if (targetPosition == -1) {
-//            // Fallback: locate the first day belonging to the current month
-//            List<DayModel> days = adapter.getDaysList();
-//            for (int i = 0; i < days.size(); i++) {
-//                if (days.get(i) != null && days.get(i).isCurrentMonth()) {
-//                    targetPosition = i;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        if (targetPosition < 0) return;
-//
-//        final int finalTargetPos = targetPosition;
-//
-//        RecyclerView.ViewHolder vh = recyclerView.findViewHolderForAdapterPosition(finalTargetPos);
-//        if (vh != null) {
-//            focusSelectorOrItem(vh.itemView);
-//            return;
-//        }
-//
-//        recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
-//            @Override
-//            public void onChildViewAttachedToWindow(@NonNull View childView) {
-//                if (recyclerView.getChildAdapterPosition(childView) == finalTargetPos) {
-//                    childView.post(() -> focusSelectorOrItem(childView));
-//                    recyclerView.removeOnChildAttachStateChangeListener(this);
-//                }
-//            }
-//
-//            @Override
-//            public void onChildViewDetachedFromWindow(@NonNull View childView) { }
-//        });
-//
-//        recyclerView.scrollToPosition(finalTargetPos);
-//    }
 
     private void focusSelectorOrItem(View root) {
         View selector = root.findViewById(R.id.selector);

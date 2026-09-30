@@ -37,7 +37,7 @@ public class MorePresenter extends AbstractBasePresenter<BaseCardView> {
     @Override
     protected BaseCardView onCreateView(ViewGroup parent) {
         BaseCardView cardView = new BaseCardView(mContext);
-        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorBlack50));
+        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorCard));
         cardView.addView(LayoutInflater.from(mContext).inflate(R.layout.card_action_item, null));
         return cardView;
     }

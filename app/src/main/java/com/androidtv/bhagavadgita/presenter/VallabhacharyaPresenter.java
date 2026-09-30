@@ -33,7 +33,7 @@ public class VallabhacharyaPresenter extends AbstractPresenter<ImageCardView> {
     @Override
     protected ImageCardView onCreateView() {
         ImageCardView cardView = new ImageCardView(mContext);
-        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorBlack50));
+        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorCard));
         cardView.setInfoVisibility(View.GONE);
         return cardView;
     }

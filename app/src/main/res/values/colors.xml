@@ -18,16 +18,17 @@
 
     <!-- Near-black aubergine-maroon ground instead of navy — reads as temple sanctum, not generic app -->
     <color name="colorBackground">#210B0E</color> <!--Background-->
-    <color name="colorCard">#3E1319</color> <!--Card-->
-    <color name="colorToday">#5C1F27</color> <!--Focus-->
+    <color name="colorCard">#10FFFFFF</color> <!--Card-->
+
     <color name="colorSelected">#D9A83D</color>
     <color name="colorFocus">#C95E3A</color>
-<!--    d36827-->
-    <color name="colorKrushna">#5F5E5A</color>
-    <color name="colorShukla">#BA7517</color>
+
+    <color name="colorKrushna">#64748B</color>
+    <color name="colorShukla">#FFD166</color>
     <color name="colorAmavas">#2C2C2A</color>
     <color name="colorPoonam">#F5F1E8</color>
 
+    <color name="colorRed">#FF6B6B</color>
     <color name="colorGreen">#1F7A65</color>
     <color name="colorGray">#9a9da0</color>
     <color name="colorDarkGray">#505050</color>

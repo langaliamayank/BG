@@ -3,6 +3,7 @@
     <string-array name="listArray">
         <item>English</item>
         <item>Hindi</item>
+        <item>Gujarati</item>
     </string-array>
 
     <string-array name="listValues">

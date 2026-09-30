@@ -1,5 +1,7 @@
 package com.androidtv.bhagavadgita.calendar;
 
+import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -39,20 +41,35 @@ public class PanchangCalculator {
                 case HINDI:
                     return (isAdhikMasa ? "अधिक " : "") + masaNameHindi + " " + pakshaHindi + " पक्ष, " + tithiNameHindi;
                 case GUJARATI:
-                    return (isAdhikMasa ? "અધિક " : "") + masaNameGujarati + " " + tithiNameGujarati + ", " + pakshaGujarati;
+                    return (isAdhikMasa ? "અધિક " : "") + masaNameGujarati + " " + pakshaGujarati + " પક્ષ, " + tithiNameGujarati;
                 default:
                     return (isAdhikMasa ? "Adhik " : "") + masaName + " " + paksha + " Paksh, " + tithiName;
             }
         }
 
         /** Matches the exact order you asked for: "Choth, 2083, Shravan, Krushna Paksh" */
-        public String getCompactDescription() {
-            return tithiName + ", " + samvatYear + ", " + masaName + ", " + paksha + " Paksh";
+        public String getCompactDescription(Language lang) {
+            switch (lang) {
+                case HINDI:
+                    return tithiNameHindi + ", " + samvatYear + ", " + masaNameHindi + ", " + pakshaHindi + " पक्ष";
+                case GUJARATI:
+                    return tithiNameGujarati + ", " + samvatYear + ", " + masaNameGujarati + ", " + pakshaGujarati + " પક્ષ";
+                default:
+                    return tithiName + ", " + samvatYear + ", " + masaName + ", " + paksha + " Paksh";
+            }
+
 //            return masaName + ", " + paksha + " Paksh " + tithiName + ", " + samvatYear;
         }
 
-        public String getTithi() {
-            return tithiName + ", " + masaName + ", " + paksha + " Paksh";
+        public String getTithi(Language lang) {
+            switch (lang) {
+                case HINDI:
+                    return tithiNameHindi + ", " + masaNameHindi + ", " + pakshaHindi + " पक्ष";
+                case GUJARATI:
+                    return tithiNameGujarati + ", " + masaNameGujarati + ", " + pakshaGujarati + " પક્ષ";
+                default:
+                    return tithiName + ", " + masaName + ", " + paksha + " Paksh";
+            }
         }
 
         public String getVS(Language lang) {

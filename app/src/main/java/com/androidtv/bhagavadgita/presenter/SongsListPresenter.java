@@ -40,9 +40,8 @@ public class SongsListPresenter extends AbstractBasePresenter<BaseCardView> {
 
     @Override
     protected BaseCardView onCreateView(ViewGroup parent) {
-
         BaseCardView cardView = new BaseCardView(mContext, null, R.style.SideInfoCardStyle);
-        cardView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorBlack50));
+        cardView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorCard));
         cardView.addView(LayoutInflater.from(mContext).inflate(R.layout.card_song_item, null));
         return cardView;
     }

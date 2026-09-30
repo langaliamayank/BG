@@ -3,9 +3,11 @@ package com.androidtv.bhagavadgita.presenter;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.ImageCardView;
 
 import com.androidtv.bhagavadgita.MasterActivity;
+import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.model.HistoryModel;
 import com.bumptech.glide.Glide;
@@ -21,6 +23,7 @@ public class HistoryPresenter extends AbstractPresenter<ImageCardView> {
     @Override
     protected ImageCardView onCreateView() {
         ImageCardView cardView = new ImageCardView(mContext);
+        cardView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorCard));
         cardView.setInfoVisibility(View.GONE);
         return cardView;
     }

@@ -68,4 +68,32 @@ public class DayModel {
     public LocalDate getFirstDateOfMonth() {
         return date != null ? date.withDayOfMonth(1) : null;
     }
+
+    public String getEnglishDate() {
+        if (primaryDate != null && !primaryDate.isEmpty()) {
+            return primaryDate;
+        }
+        return date != null ? String.valueOf(date.getDayOfMonth()) : "";
+    }
+
+    public String getHindiDate() {
+        return convertDigits(getEnglishDate(), '\u0966'); // '\u0966' is Devanagari digit 0 (०)
+    }
+
+    public String getGujaratiDate() {
+        return convertDigits(getEnglishDate(), '\u0AE6'); // '\u0AE6' is Gujarati digit 0 (૦)
+    }
+
+    private String convertDigits(String input, char zeroChar) {
+        if (input == null || input.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder(input.length());
+        for (char ch : input.toCharArray()) {
+            if (ch >= '0' && ch <= '9') {
+                sb.append((char) (zeroChar + (ch - '0')));
+            } else {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
 }

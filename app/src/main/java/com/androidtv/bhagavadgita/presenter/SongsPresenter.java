@@ -26,7 +26,7 @@ public class SongsPresenter extends AbstractPresenter<ImageCardView> {
     @Override
     protected ImageCardView onCreateView() {
         ImageCardView cardView = new ImageCardView(mContext);
-        cardView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorWhite25));
+        cardView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorCard));
         cardView.setInfoAreaBackgroundColor(Color.TRANSPARENT);
         return cardView;
     }
