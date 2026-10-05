@@ -11,14 +11,12 @@ import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 
-import com.androidtv.bhagavadgita.comman.GradientProgressBar;
-
 public class SpinnerSupportFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        GradientProgressBar progressBar = new GradientProgressBar(container.getContext());
+        ProgressBar progressBar = new ProgressBar(container.getContext());
 
         if (container instanceof FrameLayout) {
             Resources res = getResources();
@@ -27,8 +25,6 @@ public class SpinnerSupportFragment extends Fragment {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(size, size, Gravity.CENTER);
             progressBar.setLayoutParams(layoutParams);
         }
-
-        progressBar.startAnimation();
 
         return progressBar;
     }

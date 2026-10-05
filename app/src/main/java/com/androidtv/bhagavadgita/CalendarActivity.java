@@ -87,6 +87,73 @@ public class CalendarActivity extends MasterActivity {
         }, Constants.INTERVAL);
     }
 
+    private void setupWeekdayHeaders() {
+        TextView[] dayViews = new TextView[]{
+                findViewById(R.id.textSun),
+                findViewById(R.id.textMon),
+                findViewById(R.id.textTue),
+                findViewById(R.id.textWed),
+                findViewById(R.id.textThu),
+                findViewById(R.id.textFri),
+                findViewById(R.id.textSat)
+        };
+
+        String[] dayNames;
+        switch (getLanguage()) {
+            case "HINDI":
+                dayNames = new String[]{"रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"};
+                break;
+
+            case "GUJARATI":
+                dayNames = new String[]{"રવિ", "સોમ", "મંગળ", "બુધ", "ગુરુ", "શુક્ર", "શનિ"};
+                break;
+
+            case "ENGLISH":
+            default:
+                dayNames = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+                break;
+        }
+
+        for (int i = 0; i < dayViews.length; i++) {
+            if (dayViews[i] != null) {
+                dayViews[i].setText(dayNames[i]);
+            }
+        }
+    }
+
+    private void setupOtherHeaders() {
+        TextView[] dayViews = new TextView[]{
+                findViewById(R.id.textToday),
+                findViewById(R.id.textKP),
+                findViewById(R.id.textSP),
+                findViewById(R.id.textAmavas),
+                findViewById(R.id.textPunam),
+                findViewById(R.id.textEvents),
+                findViewById(R.id.textUE)};
+
+        String[] langNames;
+        switch (getLanguage()) {
+            case "HINDI":
+                langNames = new String[]{"आज", "कृष्ण पक्ष", "शुक्ल पक्ष", "अमावस्या", "पूर्णिमा", "आगामी कार्यक्रम", "आगामी कार्यक्रम"};
+                break;
+
+            case "GUJARATI":
+                langNames = new String[]{"આજે", "કૃષ્ણ પક્ષ (વદ)", "શુક્લ પક્ષ (સુદ)", "અમાસ", "પૂનમ", "આગામી તહેવાર", "આગામી તહેવાર"};
+                break;
+
+            case "ENGLISH":
+            default:
+                langNames = new String[]{"Today", "Krushna Paksh", "Shukla Paksh", "Amavasya", "Purnima", "Upcoming Event", "Upcoming Event"};
+                break;
+        }
+
+        for (int i = 0; i < dayViews.length; i++) {
+            if (dayViews[i] != null) {
+                dayViews[i].setText(langNames[i]);
+            }
+        }
+    }
+
     private void showLoader() {
         if (getSupportFragmentManager().findFragmentByTag(SPINNER_TAG) != null) return;
         mSpinnerFragment = new SpinnerSupportFragment();
@@ -114,7 +181,7 @@ public class CalendarActivity extends MasterActivity {
         YearMonth today = YearMonth.now();
         LocalDate todayDate = LocalDate.now();
 
-        CalendarPagerAdapter pagerAdapter = new CalendarPagerAdapter(this, today, Language.ENGLISH);
+        CalendarPagerAdapter pagerAdapter = new CalendarPagerAdapter(this, today);
         viewPagerCalendar.setAdapter(pagerAdapter);
         viewPagerCalendar.setCurrentItem(CalendarPagerAdapter.CENTER_POSITION, false);
 
@@ -134,8 +201,8 @@ public class CalendarActivity extends MasterActivity {
 
                 getTippaniList(shownDate);
 
-                // Focus the first day on the visible page
-//                focusFirstDayOfCurrentPage();
+                findViewById(R.id.imagePrev).setAlpha(position <= pagerAdapter.getFirstPosition() ? 0f : 1f);
+                findViewById(R.id.imageNext).setAlpha(position >= pagerAdapter.getLastPosition() ? 0f : 1f);
 
                 viewPagerCalendar.post(() -> {
                     // ViewPager2 tags fragment tags with "f" + position
@@ -144,20 +211,27 @@ public class CalendarActivity extends MasterActivity {
                         ((CalendarMonthFragment) fragment).requestFocusOnCurrentDay();
                     }
                 });
-
             }
         });
 
         findViewById(R.id.btnNext).setOnClickListener(v -> {
-            viewPagerCalendar.setCurrentItem(viewPagerCalendar.getCurrentItem() + 1, false);
+            int target = viewPagerCalendar.getCurrentItem() + 1;
+            if (target <= pagerAdapter.getLastPosition()) {
+                viewPagerCalendar.setCurrentItem(target, false);
+            }
         });
 
         findViewById(R.id.btnPrev).setOnClickListener(v -> {
-            viewPagerCalendar.setCurrentItem(viewPagerCalendar.getCurrentItem() - 1, false);
+            int target = viewPagerCalendar.getCurrentItem() - 1;
+            if (target >= pagerAdapter.getFirstPosition()) {
+                viewPagerCalendar.setCurrentItem(target, false);
+            }
         });
 
         verticalGridView = findViewById(R.id.verticalGridView);
 
+        setupWeekdayHeaders();
+        setupOtherHeaders();
         dayEdgeColor(false, findViewById(R.id.textSun), ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
         dayEdgeColor(false, findViewById(R.id.textMon), Color.GRAY);
         dayEdgeColor(false, findViewById(R.id.textTue), Color.GRAY);
@@ -167,9 +241,14 @@ public class CalendarActivity extends MasterActivity {
         dayEdgeColor(false, findViewById(R.id.textSat), Color.GRAY);
         dayEdgeColor(false, findViewById(R.id.textUE), Color.GRAY);
 
-        dayEdgeColor(true, findViewById(R.id.imageToday), getColor(R.color.colorFocus));
-        dayEdgeColor(false, findViewById(R.id.imageSP), getColor(R.color.colorShukla));
-        dayEdgeColor(false, findViewById(R.id.imageKP), getColor(R.color.colorKrushna));
+        dayEdgeColor(true, findViewById(R.id.textToday), getColor(R.color.colorFocus));
+
+        dayEdgeColor(false, findViewById(R.id.textSP), getColor(R.color.colorShukla));
+        dayEdgeColor(false, findViewById(R.id.textKP), getColor(R.color.colorKrushna));
+
+        dayEdgeColor(false, findViewById(R.id.textAmavas), getColor(R.color.colorWhite25));
+        dayEdgeColor(false, findViewById(R.id.textPunam), getColor(R.color.colorWhite25));
+        dayEdgeColor(false, findViewById(R.id.textEvents), getColor(R.color.colorWhite25));
 
         verticalGridView.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -240,28 +319,76 @@ public class CalendarActivity extends MasterActivity {
         tvMonthVS = findViewById(R.id.tvMonthVS);
     }
 
+    private String getMonthTitle(YearMonth yearMonth, Locale locale) {
+        String month = yearMonth.getMonth()
+                .getDisplayName(java.time.format.TextStyle.FULL, locale)
+                .toUpperCase(locale);
+        String year = formatNumber(yearMonth.getYear(), locale);
+        return month + " " + year;
+    }
+
+    private String formatNumber(int number, Locale locale) {
+        Locale numLocale;
+        switch (locale.getLanguage()) {
+            case "hi":
+                numLocale = Locale.forLanguageTag("hi-IN-u-nu-deva"); // ०१२३...
+                break;
+            case "gu":
+                numLocale = Locale.forLanguageTag("gu-IN-u-nu-gujr"); // ૦૧૨૩...
+                break;
+            default:
+                return String.valueOf(number); // 2026
+        }
+        java.text.NumberFormat nf = java.text.NumberFormat.getInstance(numLocale);
+        nf.setGroupingUsed(false);
+        return nf.format(number);
+    }
+
+    private String toIndicDigits(int number, Language lang) {
+        String[] hindi   = {"०","१","२","३","४","५","६","७","८","९"};
+        String[] gujarati = {"૦","૧","૨","૩","૪","૫","૬","૭","૮","૯"};
+        String[] map = (lang == Language.HINDI) ? hindi
+                : (lang == Language.GUJARATI) ? gujarati : null;
+
+        String s = String.valueOf(number);
+        if (map == null) return s;
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            sb.append(map[c - '0']);
+        }
+        return sb.toString();
+    }
+
+    public static String getLanguage() {
+        String lang = SharePreferenceManager.getString("LANGUAGE");
+        if (lang == null) {
+            return "ENGLISH";
+        }
+        return lang.trim().toUpperCase();
+    }
+
+    public String getTitle(YearMonth yearMonth) {
+        switch (getLanguage()) {
+            case "HINDI":
+                return getMonthTitle(yearMonth, new java.util.Locale("hi"));
+            case "GUJARATI":
+                return getMonthTitle(yearMonth, new java.util.Locale("gu"));
+            default:
+                return getMonthTitle(yearMonth, new java.util.Locale("en"));
+        }
+    }
+
     private void updateHeaderTitle(int position, YearMonth baseMonth) {
         YearMonth shown = baseMonth.plusMonths(position - CalendarPagerAdapter.CENTER_POSITION);
-        String monthEn = shown.getMonth()
-                .getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH)
-                .toUpperCase();
-
-//        String monthHi = shown.getMonth()
-//                .getDisplayName(java.time.format.TextStyle.FULL, new java.util.Locale("hi"));
-//
-//        String monthGu = shown.getMonth()
-//                .getDisplayName(java.time.format.TextStyle.FULL, new java.util.Locale("gu"));
-
-        String title = monthEn + " " + shown.getYear();
-
-        tvMonthTitle.setText(title);
+        tvMonthTitle.setText(getTitle(shown));
 
         LocalDate today = LocalDate.now();
-        LocalDate targetDate = YearMonth.from(today).equals(shown)
-                ? today                     // showing current month -> use today's date
-                : shown.atEndOfMonth();     // otherwise fall back to some date in that month
+        LocalDate firstDate = YearMonth.from(today).equals(shown) ? today : shown.atDay(1);
 
-        tvMonthVS.setText(PanchangCalculator.getPanchang(targetDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getVS(Language.ENGLISH));
+        String vs = PanchangCalculator.getPanchang(firstDate, CalendarUtils.LAT,
+                CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getVS();
+        tvMonthVS.setText(vs);
     }
 
     public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
@@ -287,83 +414,88 @@ public class CalendarActivity extends MasterActivity {
 
     private void getTippaniList(LocalDate selectedDate) {
         int vikramSamvatYear = PanchangCalculator
-                .getPanchang(selectedDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET)
+                .getPanchang(LocalDate.of(selectedDate.getYear(), 12, 31),
+                        CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET)
                 .getVSYear();
 
-        Map<String, FestivalModel> activeFestivalMap = loadTippaniForYear(CalendarActivity.this, vikramSamvatYear);
+//        int vikramSamvatYear = PanchangCalculator
+//                .getPanchang(selectedDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET)
+//                .getVSYear();
 
-        if (activeFestivalMap != null) {
-            YearMonth selectedYearMonth = YearMonth.from(selectedDate);
-            LocalDate today = LocalDate.now();
-            YearMonth currentYearMonth = YearMonth.from(today);
+        // Load file by calendar year -> assets/tippani_2026.json
+        Map<String, FestivalModel> activeFestivalMap =
+                loadTippaniForYear(CalendarActivity.this, vikramSamvatYear);
 
-            List<Map.Entry<String, FestivalModel>> monthEntries = new ArrayList<>();
+        if (activeFestivalMap == null) return;
 
-            // 1. Keep ALL items for the selected month
-            for (Map.Entry<String, FestivalModel> entry : activeFestivalMap.entrySet()) {
-                String dateKey = entry.getKey(); // "yyyy-MM-dd"
-                if (dateKey != null) {
-                    try {
-                        LocalDate entryDate = LocalDate.parse(dateKey);
-                        if (YearMonth.from(entryDate).equals(selectedYearMonth)) {
-                            monthEntries.add(entry);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        LocalDate today = LocalDate.now();
+        YearMonth currentYearMonth = YearMonth.from(today);
+
+        YearMonth selectedYearMonth = YearMonth.from(selectedDate);
+        List<Map.Entry<String, FestivalModel>> monthEntries = new ArrayList<>();
+
+        // 1. Keep only the entries of the selected month
+        for (Map.Entry<String, FestivalModel> entry : activeFestivalMap.entrySet()) {
+            String dateKey = entry.getKey(); // "yyyy-MM-dd"
+            if (dateKey == null) continue;
+            try {
+                LocalDate entryDate = LocalDate.parse(dateKey);
+                if (YearMonth.from(entryDate).equals(selectedYearMonth)) {
+                    monthEntries.add(entry);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            // 2. Sort chronologically from start of month to end of month
-            Collections.sort(monthEntries, (o1, o2) -> o1.getKey().compareTo(o2.getKey()));
-
-            List<FestivalModel> festivalList = new ArrayList<>();
-            int targetInitialIndex = -1;
-
-            // 3. Build list & locate initial target position
-            for (int i = 0; i < monthEntries.size(); i++) {
-                Map.Entry<String, FestivalModel> entry = monthEntries.get(i);
-                festivalList.add(entry.getValue());
-
-                // Only check for "today or future" if viewing the current ongoing month
-                if (selectedYearMonth.equals(currentYearMonth) && targetInitialIndex == -1) {
-                    LocalDate entryDate = LocalDate.parse(entry.getKey());
-                    if (!entryDate.isBefore(today)) {
-                        targetInitialIndex = i;
-                    }
-                }
-            }
-
-            // 4. Resolve default index based on whether month is past, current, or future
-            if (selectedYearMonth.isBefore(currentYearMonth)) {
-                // Past month: Always start at the top
-                targetInitialIndex = 0;
-            } else if (selectedYearMonth.isAfter(currentYearMonth)) {
-                // Future month: Always start at the top
-                targetInitialIndex = 0;
-            } else {
-                // Current month: If no upcoming events remain, focus the last event
-                if (targetInitialIndex == -1) {
-                    targetInitialIndex = festivalList.isEmpty() ? 0 : festivalList.size() - 1;
-                }
-            }
-
-            UpcomingUtsavAdapter upcomingUtsavAdapter = new UpcomingUtsavAdapter(CalendarActivity.this, festivalList);
-            verticalGridView.setAdapter(upcomingUtsavAdapter);
-
-            verticalGridView.setWindowAlignmentOffsetPercent(0.0f);
-            verticalGridView.setWindowAlignmentOffset(0);
-            verticalGridView.setWindowAlignment(BaseGridView.WINDOW_ALIGN_LOW_EDGE);
-
-            verticalGridView.setItemAlignmentOffsetPercent(0.0f);
-            verticalGridView.setItemSpacing(5);
-
-            // 5. Select and scroll to target position
-            final int initialPosition = Math.max(0, targetInitialIndex);
-            verticalGridView.post(() -> {
-                verticalGridView.setSelectedPosition(initialPosition);
-            });
         }
+
+        // 2. Sort by date
+        Collections.sort(monthEntries, (o1, o2) -> o1.getKey().compareTo(o2.getKey()));
+
+        // 3. Build the list
+        int targetInitialIndex = -1;
+        List<FestivalModel> festivalList = new ArrayList<>();
+
+        for (int i = 0; i < monthEntries.size(); i++) {
+            Map.Entry<String, FestivalModel> entry = monthEntries.get(i);
+            festivalList.add(entry.getValue());
+
+            // Only check for "today or future" if viewing the current ongoing month
+            if (selectedYearMonth.equals(currentYearMonth) && targetInitialIndex == -1) {
+                LocalDate entryDate = LocalDate.parse(entry.getKey());
+                if (!entryDate.isBefore(today)) {
+                    targetInitialIndex = i;
+                }
+            }
+        }
+
+        if (selectedYearMonth.isBefore(currentYearMonth)) {
+            // Past month: Always start at the top
+            targetInitialIndex = 0;
+        } else if (selectedYearMonth.isAfter(currentYearMonth)) {
+            // Future month: Always start at the top
+            targetInitialIndex = 0;
+        } else {
+            // Current month: If no upcoming events remain, focus the last event
+            if (targetInitialIndex == -1) {
+                targetInitialIndex = festivalList.isEmpty() ? 0 : festivalList.size() - 1;
+            }
+        }
+
+        UpcomingUtsavAdapter upcomingUtsavAdapter = new UpcomingUtsavAdapter(CalendarActivity.this, festivalList);
+        verticalGridView.setAdapter(upcomingUtsavAdapter);
+
+        verticalGridView.setWindowAlignmentOffsetPercent(0.0f);
+        verticalGridView.setWindowAlignmentOffset(0);
+        verticalGridView.setWindowAlignment(BaseGridView.WINDOW_ALIGN_LOW_EDGE);
+
+        verticalGridView.setItemAlignmentOffsetPercent(0.0f);
+        verticalGridView.setItemSpacing(5);
+
+        // 5. Select and scroll to target position
+        final int initialPosition = Math.max(0, targetInitialIndex);
+        verticalGridView.post(() -> {
+            verticalGridView.setSelectedPosition(initialPosition);
+        });
     }
 
     public static Map<String, FestivalModel> loadTippaniForYear(Context context, int vikramSamvatYear) {
@@ -487,17 +619,32 @@ public class CalendarActivity extends MasterActivity {
             }
 
             CalendarAdapter adapter = (CalendarAdapter) daysGrid.getAdapter();
-            int targetPos = adapter.getFirstDayPosition();
+            List<DayModel> days = adapter.getDaysList();
+            int targetPos = -1;
 
+            // 1. If currently on the active month, check for today's date
+            if (days != null) {
+                for (int i = 0; i < days.size(); i++) {
+                    DayModel d = days.get(i);
+                    if (d != null && d.isCurrentMonth() && d.isToday()) {
+                        targetPos = i;
+                        break;
+                    }
+                }
+            }
+
+            // 2. If today is not in this month (past or future month), select the 1st day
             if (targetPos < 0) {
-                List<DayModel> days = adapter.getDaysList();
-                if (days != null) {
-                    for (int i = 0; i < days.size(); i++) {
-                        DayModel d = days.get(i);
-                        if (d != null && d.isCurrentMonth()) {
-                            targetPos = i;
-                            break;
-                        }
+                targetPos = adapter.getFirstDayPosition();
+            }
+
+            // 3. Fallback scan for first current month day if getFirstDayPosition() returned invalid
+            if (targetPos < 0 && days != null) {
+                for (int i = 0; i < days.size(); i++) {
+                    DayModel d = days.get(i);
+                    if (d != null && d.isCurrentMonth()) {
+                        targetPos = i;
+                        break;
                     }
                 }
             }

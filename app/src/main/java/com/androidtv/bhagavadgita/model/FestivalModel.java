@@ -46,4 +46,14 @@ public class FestivalModel implements Serializable {
     public void setDate(String date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "FestivalModel{" +
+                "title='" + title + '\'' +
+                ", tithi='" + tithi + '\'' +
+                ", description='" + description + '\'' +
+                ", date='" + date + '\'' +
+                '}';
+    }
 }

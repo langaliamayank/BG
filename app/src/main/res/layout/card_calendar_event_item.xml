@@ -7,6 +7,7 @@
         android:id="@+id/utsavContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/_38sdp"
         android:orientation="horizontal"
         android:padding="@dimen/_5sdp">
 

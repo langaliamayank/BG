@@ -16,6 +16,7 @@ import androidx.leanback.widget.BaseCardView;
 import com.androidtv.bhagavadgita.CalendarActivity;
 import com.androidtv.bhagavadgita.CommanActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
+import com.androidtv.bhagavadgita.MySettingsActivity;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
 import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
@@ -68,7 +69,7 @@ public class MorePresenter extends AbstractBasePresenter<BaseCardView> {
                             return;
 
                         default:
-                            Toast.makeText(mContext, actionModel.getTitle() + " Coming Soon", Toast.LENGTH_SHORT).show();
+                            mContext.startActivity(new Intent(mContext, MySettingsActivity.class));
                             break;
                     }
                 }

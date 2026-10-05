@@ -37,49 +37,39 @@ import java.time.YearMonth;
 public class CalendarPagerAdapter extends FragmentStateAdapter {
 
     public static final int CENTER_POSITION = 600;
-    public static final int TOTAL_PAGES = 1200;
-
+    public static final int TOTAL_PAGES = 12;
     private final YearMonth baseMonth;
-    private final Language language;
-    private int pendingFocusRow = 0;
+    private final int lastPosition;
 
-    // Track created fragments so the Activity can grab the CURRENT one on page selection
-    // without relying on FragmentManager tag lookups.
     private final SparseArray<WeakReference<CalendarMonthFragment>> fragments = new SparseArray<>();
 
-    public CalendarPagerAdapter(@NonNull FragmentActivity fa, YearMonth baseMonth, Language language) {
+    public CalendarPagerAdapter(@NonNull FragmentActivity fa, YearMonth baseMonth) {
         super(fa);
         this.baseMonth = baseMonth;
-        this.language = language;
+
+        int monthsUntilDec = TOTAL_PAGES - baseMonth.getMonthValue();
+        this.lastPosition = CENTER_POSITION + monthsUntilDec;
     }
 
-    public void setPendingFocusRow(int row) {
-        this.pendingFocusRow = row;
+    public int getFirstPosition() {
+        return CENTER_POSITION - (baseMonth.getMonthValue() - 1);
     }
 
-    public int consumePendingFocusRow() {
-        int row = pendingFocusRow;
-        pendingFocusRow = 0;
-        return row;
+    public int getLastPosition() {
+        return lastPosition;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
         YearMonth month = baseMonth.plusMonths(position - CENTER_POSITION);
-        CalendarMonthFragment fragment = CalendarMonthFragment.newInstance(month, language);
+        CalendarMonthFragment fragment = CalendarMonthFragment.newInstance(month);
         fragments.put(position, new WeakReference<>(fragment));
         return fragment;
     }
 
-    @Nullable
-    public CalendarMonthFragment getFragment(int position) {
-        WeakReference<CalendarMonthFragment> ref = fragments.get(position);
-        return ref != null ? ref.get() : null;
-    }
-
     @Override
     public int getItemCount() {
-        return TOTAL_PAGES;
+        return lastPosition + 1; // pages 0..lastPosition
     }
 }

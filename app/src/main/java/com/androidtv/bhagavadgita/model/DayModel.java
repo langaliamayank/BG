@@ -1,5 +1,7 @@
 package com.androidtv.bhagavadgita.model;
 
+import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -42,11 +44,25 @@ public class DayModel {
     }
 
     public boolean isPunam() {
-        return description != null && description.contains("Punam");
+        switch (getLanguage()) {
+            case "HINDI":
+                return description != null && description.contains("पूनम");
+            case "GUJARATI":
+                return description != null && description.contains("પૂનમ");
+            default:
+                return description != null && description.contains("Punam");
+        }
     }
 
     public boolean isAmavas() {
-        return description != null && description.contains("Amavas");
+        switch (getLanguage()) {
+            case "HINDI":
+                return description != null && description.contains("अमावस");
+            case "GUJARATI":
+                return description != null && description.contains("અમાસ");
+            default:
+                return description != null && description.contains("Amavas");
+        }
     }
 
     @Override
@@ -95,5 +111,13 @@ public class DayModel {
             }
         }
         return sb.toString();
+    }
+
+    public static String getLanguage() {
+        String lang = SharePreferenceManager.getString("LANGUAGE");
+        if (lang == null) {
+            return "ENGLISH";
+        }
+        return lang.trim().toUpperCase();
     }
 }

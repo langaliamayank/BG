@@ -24,6 +24,7 @@ import androidx.leanback.widget.VerticalGridView;
 
 import com.androidtv.bhagavadgita.CalendarActivity;
 import com.androidtv.bhagavadgita.MasterActivity;
+import com.androidtv.bhagavadgita.MySettingsActivity;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.comman.MyApplication;
 import com.androidtv.bhagavadgita.comman.RowHeaderItem;
@@ -196,7 +197,7 @@ public class DashboardFragment extends MasterBrowseFragment {
                         return;
 
                     default:
-                        Toast.makeText(requireActivity(), action.getTitle() + " Coming Soon", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(requireActivity(), MySettingsActivity.class));
                         break;
                 }
             }

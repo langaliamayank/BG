@@ -5,16 +5,16 @@
     <item android:id="@+id/leftEdge">
         <shape android:shape="rectangle">
             <solid android:color="@color/colorCard"/>
-            <corners android:radius="@dimen/_4sdp" />
+            <corners android:radius="@dimen/_3sdp" />
         </shape>
     </item>
 
     <item
         android:id="@+id/rightEdge"
-        android:left="@dimen/_2sdp">
+        android:left="@dimen/_1sdp">
         <shape android:shape="rectangle">
             <solid android:color="@color/colorCard"/>
-            <corners android:radius="@dimen/_3sdp" />
+            <corners android:radius="@dimen/_2sdp" />
         </shape>
     </item>
 

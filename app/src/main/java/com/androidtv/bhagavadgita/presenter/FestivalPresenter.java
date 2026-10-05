@@ -49,7 +49,7 @@ public class FestivalPresenter extends AbstractBasePresenter<BaseCardView> {
             try {
                 LocalDate localDate = LocalDate.parse(festivalModel.getDate()); // expects "yyyy-MM-dd"
                 tithi = PanchangCalculator.getPanchang(
-                        localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getCompactDescription(Language.ENGLISH);
+                        localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getCompactDescription();
             } catch (Exception e) {
                 tithi = "";
             }

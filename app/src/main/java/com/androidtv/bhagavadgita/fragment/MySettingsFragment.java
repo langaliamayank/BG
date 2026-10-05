@@ -14,6 +14,8 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 
 import com.androidtv.bhagavadgita.R;
+import com.androidtv.bhagavadgita.calendar.Language;
+import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 
 public class MySettingsFragment extends LeanbackSettingsFragment
@@ -71,34 +73,34 @@ public class MySettingsFragment extends LeanbackSettingsFragment
 
             showMediaDecoder();
             showAutoplaySwitch();
+            showCalendarEvents();
         }
 
         private void showMediaDecoder() {
             ListPreference keyLanguage = (ListPreference) findPreference("keyLanguage");
             if (keyLanguage != null) {
+                String[] languageType = getResources().getStringArray(R.array.listArray);
 
-                String selectedType = SharePreferenceManager.getString("LANGUAGE");
-                String languageType[] = getResources().getStringArray(R.array.listArray);
-                if (selectedType.isEmpty() || selectedType == null) {
+                // Ensure both entries and entryValues are defined and match
+                keyLanguage.setEntries(languageType);
+                keyLanguage.setEntryValues(languageType); // Or use R.array.listValues if separate
+
+                String selectedLanguage = SharePreferenceManager.getString("LANGUAGE");
+                if (selectedLanguage == null || selectedLanguage.isEmpty()) {
                     keyLanguage.setValue(languageType[0]);
                 } else {
-                    keyLanguage.setValue(selectedType);
+                    keyLanguage.setValue(selectedLanguage);
                 }
-
-                keyLanguage.setEntries(languageType);
 
                 keyLanguage.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        Toast.makeText(getActivity(), "onPreferenceChange", Toast.LENGTH_SHORT).show();
                         SharePreferenceManager.save("LANGUAGE", newValue.toString());
+                        getActivity().finish();
 
-//                        getActivity().startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        getActivity().finishAffinity();
                         return false;
                     }
                 });
-
             }
         }
 
@@ -114,6 +116,24 @@ public class MySettingsFragment extends LeanbackSettingsFragment
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
                         boolean enabled = (Boolean) newValue;
                         SharePreferenceManager.save("AUTOPLAY", enabled);
+                        return true; // true = accept the new checked state; your ListPreference returns false intentionally since it restarts the app instead
+                    }
+                });
+            }
+        }
+
+        private void showCalendarEvents() {
+            SwitchPreference keyCalendarEvents = (SwitchPreference) findPreference("keyCalendarEvents");
+            if (keyCalendarEvents != null) {
+
+                boolean savedValue = SharePreferenceManager.getBoolean("CAL_EVENTS", true);
+                keyCalendarEvents.setChecked(savedValue);
+
+                keyCalendarEvents.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        boolean enabled = (Boolean) newValue;
+                        SharePreferenceManager.save("CAL_EVENTS", enabled);
                         return true; // true = accept the new checked state; your ListPreference returns false intentionally since it restarts the app instead
                     }
                 });

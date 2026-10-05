@@ -42,12 +42,11 @@ public class MyVerticalGridPresenter extends VerticalGridPresenter {
         gridView.setClipChildren(false);
         gridView.setClipToPadding(false);
 
-        gridView.setFocusScrollStrategy(VerticalGridView.FOCUS_SCROLL_ALIGNED);
         gridView.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_LOW_EDGE);
         gridView.setWindowAlignmentOffset(0);
         gridView.setWindowAlignmentOffsetPercent(0f);
         gridView.setItemAlignmentOffsetPercent(0f);
-        gridView.setVerticalSpacing(5);
+        gridView.setVerticalSpacing(10);
 
         mBorderDecoration = new MyVerticalBorderDecoration(gridView.getContext());
         gridView.addItemDecoration(mBorderDecoration);

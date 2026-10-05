@@ -1,9 +1,19 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="@dimen/_3sdp" />
-            <stroke android:color="@color/colorWhite" android:width="@dimen/_1sdp" />
-        </shape>
+        <vector
+            android:width="@dimen/_38sdp"
+            android:height="@dimen/_38sdp"
+            android:viewportWidth="100"
+            android:viewportHeight="100">
+
+            <path
+                android:pathData="M 50,98 L 94.5,98 Q 98,98 98,94.5 L 98,50"
+                android:strokeWidth="3"
+                android:strokeColor="@color/colorWhite75"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round" />
+
+        </vector>
     </item>
     <item android:left="@dimen/_2sdp">
         <shape android:shape="rectangle">

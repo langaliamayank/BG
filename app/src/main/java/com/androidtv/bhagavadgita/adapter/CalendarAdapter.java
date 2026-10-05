@@ -20,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
 import com.androidtv.bhagavadgita.calendar.Language;
+import com.androidtv.bhagavadgita.calendar.NakshatraCalculator;
 import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
 import com.androidtv.bhagavadgita.comman.ColorUtils;
+import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.fragment.CalendarMonthFragment;
 import com.androidtv.bhagavadgita.model.DayModel;
@@ -91,7 +93,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         holder.imageAP.setImageDrawable(null);
         holder.imageEvent.setImageDrawable(null);
 
-        holder.tvPrimaryDate.setText(day.getEnglishDate());
+        holder.tvPrimaryDate.setText(getPrimaryDate(day));
 
         boolean isShuklaPaksh = PanchangCalculator.getPanchang(
                 day.getDate(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
@@ -105,7 +107,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
         holder.tvDescription.setText(PanchangCalculator.getPanchang(
                 day.getDate(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
-        ).getTithi(Language.ENGLISH));
+        ).getTithi());
 
         // --- Current-month cells: always focusable, so grid nav works everywhere ---
         holder.selector.setFocusable(true);
@@ -117,8 +119,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
         boolean hasFestival = day.getFestivalTitle() != null && !day.getFestivalTitle().trim().isEmpty();
         if (hasFestival) {
-            holder.tvDescription.setText(day.getFestivalTitle().trim());
-            holder.imageEvent.setImageResource(R.drawable.bg_calendar_event);
+
+            boolean calEvents = SharePreferenceManager.getBoolean("CAL_EVENTS", true);
+            if (!calEvents) {
+                holder.tvDescription.setText(PanchangCalculator.getPanchang(
+                        day.getDate(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
+                ).getTithi());
+            } else {
+                holder.tvDescription.setText(day.getFestivalTitle().trim());
+                holder.imageEvent.setImageResource(R.drawable.bg_calendar_event);
+            }
         }
 
         if (day.isSunday()) {
@@ -248,5 +258,24 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             }
         }
         return -1;
+    }
+
+    public static String getLanguage() {
+        String lang = SharePreferenceManager.getString("LANGUAGE");
+        if (lang == null) {
+            return "ENGLISH";
+        }
+        return lang.trim().toUpperCase();
+    }
+
+    public String getPrimaryDate(DayModel dayModel) {
+        switch (getLanguage()) {
+            case "HINDI":
+                return dayModel.getHindiDate();
+            case "GUJARATI":
+                return dayModel.getGujaratiDate();
+            default:
+                return dayModel.getEnglishDate();
+        }
     }
 }

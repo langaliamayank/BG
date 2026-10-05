@@ -11,7 +11,6 @@
         android:layout_height="@dimen/_12sdp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/_10sdp"
-        android:alpha="0.3"
         android:src="@drawable/ic_action_back" />
 
     <LinearLayout
@@ -69,81 +68,87 @@
                 android:gravity="center|end"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imageKP"
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
-                    android:background="@drawable/bg_calendar" />
-
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:text="Krushna Paksh"
-                    android:textSize="@dimen/_5sdp" />
-
-                <ImageView
-                    android:id="@+id/imageSP"
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:background="@drawable/bg_calendar" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:text="Shukla Paksh"
-                    android:textSize="@dimen/_5sdp" />
-
-                <ImageView
-                    android:id="@+id/imageToday"
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:background="@drawable/bg_calendar" />
-
-                <TextView
+                    android:id="@+id/textToday"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:background="@drawable/bg_calendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:text="Today"
                     android:textSize="@dimen/_5sdp" />
 
-                <ImageView
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:src="@drawable/ic_action_amavasya" />
-
                 <TextView
+                    android:id="@+id/textKP"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:background="@drawable/bg_calendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:text="Amavas"
+                    android:text="Krushna Paksh"
                     android:textSize="@dimen/_5sdp" />
 
-                <ImageView
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:src="@drawable/ic_action_poonam" />
-
                 <TextView
+                    android:id="@+id/textSP"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:background="@drawable/bg_calendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:text="Poonam"
+                    android:text="Shukla Paksh"
                     android:textSize="@dimen/_5sdp" />
 
-
-                <ImageView
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
+                <TextView
+                    android:id="@+id/textAmavas"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:drawablePadding="@dimen/_3sdp"
+                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/ic_action_amavasya"
+                    android:background="@drawable/bg_calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:src="@drawable/bg_calendar_event" />
+                    android:text="Amavasya"
+                    android:textSize="@dimen/_5sdp" />
 
                 <TextView
+                    android:id="@+id/textPunam"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:drawablePadding="@dimen/_3sdp"
+                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/ic_action_poonam"
+                    android:background="@drawable/bg_calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:text="Purnima"
+                    android:textSize="@dimen/_5sdp" />
+
+                <TextView
+                    android:id="@+id/textEvents"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:drawablePadding="@dimen/_3sdp"
+                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/bg_calendar_event"
+                    android:background="@drawable/bg_calendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
@@ -333,7 +338,6 @@
         android:layout_height="@dimen/_12sdp"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/_10sdp"
-        android:alpha="0.3"
         android:rotation="180"
         android:src="@drawable/ic_action_back" />
 

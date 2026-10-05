@@ -161,7 +161,7 @@ public class HeaderView extends RelativeLayout implements TitleViewAdapter.Provi
 
         SimpleDateFormat df2 = new SimpleDateFormat("EEEE dd MMM, yyyy");
         String formattedTime = df2.format(c.getTime());
-        txtDayDate.setText(formattedTime + "\n" + PanchangCalculator.getPanchang(LocalDate.now(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getTithi(Language.ENGLISH));
+        txtDayDate.setText(formattedTime + "\n" + PanchangCalculator.getPanchang(LocalDate.now(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getTithi());
     }
 
     /**

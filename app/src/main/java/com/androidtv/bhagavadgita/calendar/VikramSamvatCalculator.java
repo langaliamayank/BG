@@ -4,31 +4,44 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * Computes the Vikram Samvat year (Chaitradi reckoning — new year begins at
- * Chaitra Shukla Pratipada, typically late March).
+ * Vikram Samvat year (Chaitradi reckoning): the new year begins at
+ * Chaitra Shukla Pratipada. Masa index follows MasaCalculator
+ * (0 = Vaishakh ... 6 = Kartik, 7 = Margashirsh, 8 = Paush,
+ *  9 = Magh, 10 = Phalgun, 11 = Chaitra).
  */
 public class VikramSamvatCalculator {
+
+    private static final int OFFSET = 57; // VS year = Gregorian year + 57 (after Chaitra Shukla)
+
+    private static final int MARGASHIRSH = 7;
+    private static final int PHALGUN = 10;
+    private static final int CHAITRA = 11;
 
     public static int getYear(LocalDateTime sunriseUtc, LocalDate localDate) {
         MasaCalculator.MasaResult masa = MasaCalculator.getMasa(sunriseUtc);
         TithiCalculator.Result tithi = TithiCalculator.getTithi(sunriseUtc);
 
-        int gregorianYear = localDate.getYear();
+        int gYear = localDate.getYear();
         int month = localDate.getMonthValue();
 
-        if (masa.masaIndex == 11) {
-            // Chaitra masa itself straddles the year boundary:
-            // Krishna paksha (tithi 16-30) = still old VS year,
-            // Shukla paksha (tithi 1-15)  = new VS year has begun.
-            return (tithi.tithiNumber <= 15) ? gregorianYear + 57 : gregorianYear + 56;
+        // 1. Chaitra: the new year starts at Shukla Pratipada.
+        //    Krishna paksha = still the old year. An Adhik Chaitra is also old year,
+        //    the new year starts with the Nija (regular) Chaitra.
+        if (masa.masaIndex == CHAITRA) {
+            boolean newYearStarted = tithi.tithiNumber <= 15 && !masa.isAdhik;
+            return gYear + (newYearStarted ? OFFSET : OFFSET - 1);
         }
 
-        // Every other masa falls entirely after this Gregorian year's Chaitra
-        // Shukla Pratipada if the Gregorian month is April-December (same year's
-        // transition already happened), or before it if Jan-March (last year's
-        // transition is the one that applies — e.g. Posh/Maha/Fagan in Jan-Mar
-        // still belong to the VS year that began the previous March).
-        int transitionYear = (month >= 4) ? gregorianYear : gregorianYear - 1;
-        return transitionYear + 57;
+        // 2. Margashirsh..Phalgun (7-10) can fall in Dec or Jan-Mar.
+        //    Jul-Dec -> this Gregorian year's Chaitra already happened.
+        //    Jan-Jun -> the VS year began in the previous Gregorian year.
+        if (masa.masaIndex >= MARGASHIRSH && masa.masaIndex <= PHALGUN) {
+            int startYear = (month >= 7) ? gYear : gYear - 1;
+            return startYear + OFFSET;
+        }
+
+        // 3. Vaishakh..Kartik (0-6) always come after that Gregorian year's
+        //    Chaitra Shukla Pratipada.
+        return gYear + OFFSET;
     }
 }

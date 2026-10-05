@@ -3,6 +3,7 @@ package com.androidtv.bhagavadgita.calendar;
 import android.content.Context;
 
 import com.androidtv.bhagavadgita.comman.MyApplication;
+import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.model.DayModel;
 import com.androidtv.bhagavadgita.model.FestivalModel;
 import com.google.gson.Gson;
@@ -32,74 +33,11 @@ import java.util.Map;
 
 public class CalendarUtils {
 
-    // Nathdwara, Rajasthan, India coordinates
     public static final double LAT = 24.9379;
     public static final double LON = 73.8235;
     public static final double UTC_OFFSET = 5.5;
 
-    /**
-     * Backward-compatible overload — defaults to English.
-     */
     public static List<DayModel> generateCalendarDays(YearMonth yearMonth) {
-        return generateCalendarDays(yearMonth, Language.ENGLISH);
-    }
-
-    /**
-     * Builds a full 6x7 (42-cell) grid for the given month: leading days from the
-     * previous month, all days of the current month, and trailing days from the
-     * next month — enough to always fill complete weeks, Google-Calendar style.
-     */
-//    public static List<DayModel> generateCalendarDays(YearMonth yearMonth, Language lang) {
-//        List<DayModel> days = new ArrayList<>();
-//        LocalDate today = LocalDate.now();
-//
-//        LocalDate firstOfMonth = yearMonth.atDay(1);
-//        LocalDate lastOfMonth = yearMonth.atEndOfMonth();
-//
-//        // Sunday-first grid (matches your screenshot header: SUN MON TUE ... SAT)
-//        int firstDayOfWeekValue = firstOfMonth.getDayOfWeek().getValue() % 7; // Sun=0 ... Sat=6
-//        LocalDate gridStart = firstOfMonth.minusDays(firstDayOfWeekValue);
-//
-//        int trailingDaysNeeded = (7 - (lastOfMonth.getDayOfWeek().getValue() % 7) - 1) % 7;
-//        LocalDate gridEnd = lastOfMonth.plusDays(trailingDaysNeeded);
-//
-//        // Pad to a full 6 rows (42 cells) so the grid height stays consistent month to month
-//        long totalCells = java.time.temporal.ChronoUnit.DAYS.between(gridStart, gridEnd) + 1;
-//        if (totalCells < 42) {
-//            gridEnd = gridEnd.plusDays(42 - totalCells);
-//        }
-//
-//        for (LocalDate d = gridStart; !d.isAfter(gridEnd); d = d.plusDays(1)) {
-//            boolean isCurrentMonth = d.getMonth() == yearMonth.getMonth() && d.getYear() == yearMonth.getYear();
-//            boolean isToday = d.isEqual(today);
-//
-//            String description;
-//            try {
-//                description = PanchangCalculator.getPanchang(d, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getDescription(lang);
-//            } catch (Exception e) {
-//                description = "";
-//            }
-//
-//            String numScript;
-//            try {
-//                numScript = PanchangCalculator.getPanchang(d, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getNumberScript();
-//            } catch (Exception e) {
-//                numScript = "";
-//            }
-//
-//            DayModel model = new DayModel(
-//                    d,
-//                    String.valueOf(d.getDayOfMonth()),
-//                    numScript, // fill with your Gujarati-digit lookup if you use one, else leave blank
-//                    description,
-//                    isCurrentMonth,
-//                    isToday);
-//                    days.add(model);
-//        }
-//        return days;
-//    }
-
-    public static List<DayModel> generateCalendarDays(YearMonth yearMonth, Language lang) {
         List<DayModel> days = new ArrayList<>();
         LocalDate today = LocalDate.now();
 
@@ -121,15 +59,22 @@ public class CalendarUtils {
 
         // Tippani (festival) map for this grid's VS year(s). A month view can straddle two
         // VS years right around the March/April new-year boundary, so load both ends.
+
+        // Festival map: one file per calendar year (file name = year + 57)
+        // 2026 -> tippani_2083.json, 2027 -> tippani_2084.json
+        // The grid can include days of the previous/next year (Dec/Jan),
+        // so load the files for the grid's start year and end year.
         Map<String, FestivalModel> tippaniMap = new HashMap<>();
         try {
             android.content.Context ctx = MyApplication.getInstance().getApplicationContext(); // ADJUST to your real getter
             int vsYearStart = PanchangCalculator.getPanchang(gridStart, LAT, LON, UTC_OFFSET).samvatYear;
             int vsYearEnd = PanchangCalculator.getPanchang(gridEnd, LAT, LON, UTC_OFFSET).samvatYear;
 
+            /*Map<String, FestivalModel> mapStart = loadTippaniForYear(ctx, vsYearStart + 57);*/
             Map<String, FestivalModel> mapStart = loadTippaniForYear(ctx, vsYearStart);
             if (mapStart != null) tippaniMap.putAll(mapStart);
             if (vsYearEnd != vsYearStart) {
+                /*Map<String, FestivalModel> mapEnd = loadTippaniForYear(ctx, vsYearEnd + 57);*/
                 Map<String, FestivalModel> mapEnd = loadTippaniForYear(ctx, vsYearEnd);
                 if (mapEnd != null) tippaniMap.putAll(mapEnd);
             }
@@ -143,7 +88,7 @@ public class CalendarUtils {
 
             String description;
             try {
-                description = PanchangCalculator.getPanchang(d, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getDescription(lang);
+                description = PanchangCalculator.getPanchang(d, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getDescription();
             } catch (Exception e) {
                 description = "";
             }

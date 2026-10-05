@@ -2,45 +2,55 @@ package com.androidtv.bhagavadgita.comman;
 
 import android.view.View;
 
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.androidtv.bhagavadgita.R;
 
-public class DepthPageTransformer implements ViewPager.PageTransformer {
+public class DepthPageTransformer implements ViewPager2.PageTransformer {
 
-    private final float imageVelocityFactor = 1.2f;
-    private final float metaVelocityFactor = 1.5f;
+    private static final float MIN_SCALE = 0.75f;
 
     @Override
     public void transformPage(View page, float position) {
-        int width = page.getWidth();
+        int pageWidth = page.getWidth();
+        View childLayout = page.findViewById(R.id.childLayout);
 
-        // Find your inner views similar to SonyLIV's ViewHolder setup
-//        View imageView = page.findViewById(R.id.childLayout); // or spotlight_main
-//        View metadataView = page.findViewById(R.id.advertisementMetadata);
+        if (position < -1) { // [-Infinity, -1)
+            // Page is completely off-screen to the left
+            page.setAlpha(0f);
 
-        if (position < -1.0f || position > 1.0f) {
-            // Page is way offscreen
-            page.setAlpha(1.0f);
-        } else {
-            float pos = -position;
-            float wid = width;
+        } else if (position <= 0) { // [-1, 0]
+            // Use default slide transition for the page moving left
+            page.setAlpha(1f);
+            page.setTranslationX(0f);
+            page.setScaleX(1f);
+            page.setScaleY(1f);
 
-            // 1. Parallax shift for the background image
-//            if (imageView != null) {
-//                float imageTranslation = (wid / imageVelocityFactor) * pos;
-//                imageView.setTranslationX(imageTranslation);
-//            }
+            // Parallax translation for the inner child view
+            if (childLayout != null) {
+                childLayout.setTranslationX(0f);
+            }
 
-            // 2. Parallax shift for text/metadata
-//            if (metadataView != null) {
-//                float metaTranslation = (wid / metaVelocityFactor) * pos;
-//                metadataView.setTranslationX(metaTranslation);
-//
-//                // Fade out metadata as it moves away from center
-//                float alphaFactor = 1.0f - Math.abs(position);
-//                metadataView.setAlpha(alphaFactor);
-//            }
+        } else if (position <= 1) { // (0, 1]
+            // Fade the page out
+            page.setAlpha(1f - position);
+
+            // Counteract default slide transition
+            page.setTranslationX(pageWidth * -position);
+
+            // Scale the page down (depth effect)
+            float scaleFactor = MIN_SCALE + (1f - MIN_SCALE) * (1f - Math.abs(position));
+            page.setScaleX(scaleFactor);
+            page.setScaleY(scaleFactor);
+
+            // Optional: Parallax shift on the child element
+            if (childLayout != null) {
+                childLayout.setTranslationX(pageWidth * 0.3f * -position);
+            }
+
+        } else { // (1, +Infinity]
+            // Page is completely off-screen to the right
+            page.setAlpha(0f);
         }
     }
 }

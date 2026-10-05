@@ -10,6 +10,13 @@
         android:summaryOff="Playback stops after current verse"
         android:defaultValue="true" />
 
+    <SwitchPreference
+        android:key="keyCalendarEvents"
+        android:title="Calendar Events"
+        android:summaryOn="Show upcoming events"
+        android:summaryOff="Hide upcoming events"
+        android:defaultValue="true" />
+
     <ListPreference
         android:entries="@array/listArray"
         android:entryValues="@array/listValues"

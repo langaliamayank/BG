@@ -36,12 +36,11 @@ public class CalendarMonthFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    public static CalendarMonthFragment newInstance(YearMonth ym, Language lang) {
+    public static CalendarMonthFragment newInstance(YearMonth ym) {
         CalendarMonthFragment f = new CalendarMonthFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_YEAR, ym.getYear());
         b.putInt(ARG_MONTH, ym.getMonthValue());
-        b.putString(ARG_LANG, lang.name());
         f.setArguments(b);
         return f;
     }
@@ -59,7 +58,6 @@ public class CalendarMonthFragment extends Fragment {
 
         Bundle args = requireArguments();
         YearMonth yearMonth = YearMonth.of(args.getInt(ARG_YEAR), args.getInt(ARG_MONTH));
-        Language lang = Language.valueOf(args.getString(ARG_LANG));
 
         recyclerView = view.findViewById(R.id.recyclerViewDays);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 7));
@@ -73,7 +71,7 @@ public class CalendarMonthFragment extends Fragment {
         recyclerView.setPreserveFocusAfterLayout(true);
 
         CalendarAdapter calendarAdapter =
-                new CalendarAdapter(CalendarUtils.generateCalendarDays(yearMonth, lang), CalendarMonthFragment.this);
+                new CalendarAdapter(CalendarUtils.generateCalendarDays(yearMonth), CalendarMonthFragment.this);
         recyclerView.setAdapter(calendarAdapter);
 
         calendarAdapter.setOnPageChangeListener(new CalendarAdapter.OnPageChangeListener() {
@@ -92,9 +90,12 @@ public class CalendarMonthFragment extends Fragment {
 
     private void goToPage(int direction) {
         ViewPager2 pager = requireActivity().findViewById(R.id.viewPagerCalendar);
-        if (pager != null) {
+        if (pager != null && pager.getAdapter() instanceof CalendarPagerAdapter) {
+            CalendarPagerAdapter a = (CalendarPagerAdapter) pager.getAdapter();
+            int target = pager.getCurrentItem() + direction;
+            if (target < a.getFirstPosition() || target > a.getLastPosition()) return;
             // MUST BE FALSE for Android TV to prevent focus drop during animation
-            pager.setCurrentItem(pager.getCurrentItem() + direction, false);
+            pager.setCurrentItem(target, false);
         }
     }
 

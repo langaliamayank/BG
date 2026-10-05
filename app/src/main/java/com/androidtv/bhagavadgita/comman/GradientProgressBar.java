@@ -17,11 +17,12 @@ import com.androidtv.bhagavadgita.R;
 
 public class GradientProgressBar extends View {
 
-    /*For Circle*/
     private Paint paint;
     private RectF rect;
-    private float rotationAngle = 0;
+    private SweepGradient shader;
+    private final Matrix matrix = new Matrix();
     private ValueAnimator animator;
+    private float strokeWidth = 20f;
 
     public GradientProgressBar(Context context) {
         super(context);
@@ -31,46 +32,76 @@ public class GradientProgressBar extends View {
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(20f); // Adjust thickness here
-        paint.setStrokeCap(Paint.Cap.ROUND); // Smooth rounded ends
+        paint.setStrokeWidth(strokeWidth);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        rect = new RectF();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        float margin = paint.getStrokeWidth() / 2;
-        rect = new RectF(margin, margin, w - margin, h - margin);
+
+        float halfStroke = strokeWidth / 2f;
+        float left = getPaddingLeft() + halfStroke;
+        float top = getPaddingTop() + halfStroke;
+        float right = w - getPaddingRight() - halfStroke;
+        float bottom = h - getPaddingBottom() - halfStroke;
+
+        rect.set(left, top, right, bottom);
 
         int green = ContextCompat.getColor(getContext(), R.color.colorAccent);
         int orange = ContextCompat.getColor(getContext(), R.color.colorTextPrimary);
 
-        SweepGradient shader = new SweepGradient(w / 2f, h / 2f,
-                new int[]{green, orange, green}, null);
+        float centerX = w / 2f;
+        float centerY = h / 2f;
+
+        shader = new SweepGradient(centerX, centerY, new int[]{green, orange, green}, null);
         paint.setShader(shader);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.save();
-        // Rotate the entire canvas based on the animator value
-        canvas.rotate(rotationAngle, getWidth() / 2f, getHeight() / 2f);
+        // drawArc with 0..360 draws the complete circle with the rotated gradient
         canvas.drawArc(rect, 0, 360, false, paint);
-        canvas.restore();
     }
 
     public void startAnimation() {
         if (animator != null && animator.isRunning()) return;
 
-        animator = ValueAnimator.ofFloat(0, 360);
-        animator.setDuration(1000); // Speed of rotation
+        animator = ValueAnimator.ofFloat(0f, 360f);
+        animator.setDuration(1000);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.addUpdateListener(animation -> {
-            rotationAngle = (float) animation.getAnimatedValue();
-            invalidate(); // Redraw
+            float angle = (float) animation.getAnimatedValue();
+            if (shader != null) {
+                matrix.setRotate(angle, getWidth() / 2f, getHeight() / 2f);
+                shader.setLocalMatrix(matrix);
+                paint.setShader(shader);
+            }
+            invalidate();
         });
         animator.start();
+    }
+
+    public void stopAnimation() {
+        if (animator != null) {
+            animator.cancel();
+            animator = null;
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startAnimation();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        stopAnimation();
     }
 
     /*For Square*/

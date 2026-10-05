@@ -57,10 +57,25 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
         viewHolder.textTitle.setText(festivalModel.getTitle());
 
         String tithi;
+        int defaultColor = ContextCompat.getColor(viewHolder.itemView.getContext(), R.color.colorKrushna);
+
         try {
             LocalDate localDate = LocalDate.parse(festivalModel.getDate()); // expects "yyyy-MM-dd"
             tithi = PanchangCalculator.getPanchang(
-                    localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getCompactDescription(Language.ENGLISH);
+                    localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getCompactDescription();
+
+            boolean isShuklaPaksh = PanchangCalculator.getPanchang(
+                    localDate, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
+            ).isShuklaPaksh();
+
+            defaultColor = ContextCompat.getColor(
+                    viewHolder.itemView.getContext(),
+                    isShuklaPaksh ? R.color.colorShukla : R.color.colorKrushna
+            );
+
+            viewHolder.defaultColor = defaultColor;
+            edgeColor(viewHolder, defaultColor);
+
         } catch (Exception e) {
             tithi = "";
         }
@@ -70,11 +85,13 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
         viewHolder.textDate.setText(formatToOrdinalDate(festivalModel.getDate()));
 
         viewHolder.itemView.setNextFocusLeftId(R.id.selector);
-        edgeColor(viewHolder, ContextCompat.getColor(mContext, R.color.colorCard));
         viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                edgeColor(viewHolder, ContextCompat.getColor(mContext, hasFocus ? R.color.colorWhite : R.color.colorCard));
+                int colorToApply = hasFocus
+                        ? ContextCompat.getColor(mContext, R.color.colorWhite)
+                        : viewHolder.defaultColor;
+                edgeColor(viewHolder, colorToApply);
 
                 if (mContext instanceof CalendarActivity) {
                     if (hasFocus) {
@@ -154,11 +171,12 @@ public class UpcomingUtsavAdapter extends RecyclerView.Adapter<UpcomingUtsavAdap
         String rightEdgeColor = SharePreferenceManager.getString("KEY_THEME_COLOR");
         GradientDrawable rightEdge = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.rightEdge);
         rightEdge.mutate();
-        rightEdge.setColor(ColorUtils.darken(Color.parseColor(rightEdgeColor), 0.1f));
+        rightEdge.setColor(ColorUtils.whiten(Color.parseColor(rightEdgeColor), 0.1f));
     }
 
     class UtsavViewHolder extends RecyclerView.ViewHolder {
         private TextView textTitle, textTithi, textDescription, textDate;
+        int defaultColor;
 
         public UtsavViewHolder(View itemView) {
             super(itemView);

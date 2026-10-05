@@ -46,7 +46,7 @@ public class TithiCalculator {
         public String tithiNumeralScript; // traditional numeral for the corner display
 
         public String label() {
-            return label(Language.ENGLISH);
+            return label();
         }
 
         public String label(Language lang) {

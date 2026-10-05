@@ -35,7 +35,7 @@ public class MasaCalculator {
         }
     }
 
-    private static double ayanamsaDeg(double T) {
+    public static double ayanamsaDeg(double T) {
         // Standard Lahiri Ayanamsa calculation based on Julian Century T
         double seconds = 50.23884 * (2000.0 + T * 100.0 - 2000.0) + 0.000111 * Math.pow(2000.0 + T * 100.0 - 2000.0, 2);
         // Base Lahiri Ayanamsa for J2000.0 is approximately 23° 51' 11" (23.853°)

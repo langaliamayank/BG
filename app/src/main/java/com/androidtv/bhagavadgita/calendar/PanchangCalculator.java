@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 public class PanchangCalculator {
 
@@ -27,20 +28,18 @@ public class PanchangCalculator {
         public String tithiNameGujarati;
         public int tithiNumber;
         private String tithiNumeralScript;
+        private String nakshatra;
+        private LocalDateTime nakshatraTime;
 
         public String getNumberScript() {
             return tithiNumeralScript;
         }
 
         public String getDescription() {
-            return getDescription(Language.ENGLISH);
-        }
-
-        public String getDescription(Language lang) {
-            switch (lang) {
-                case HINDI:
+            switch (getLanguage()) {
+                case "HINDI":
                     return (isAdhikMasa ? "अधिक " : "") + masaNameHindi + " " + pakshaHindi + " पक्ष, " + tithiNameHindi;
-                case GUJARATI:
+                case "GUJARATI":
                     return (isAdhikMasa ? "અધિક " : "") + masaNameGujarati + " " + pakshaGujarati + " પક્ષ, " + tithiNameGujarati;
                 default:
                     return (isAdhikMasa ? "Adhik " : "") + masaName + " " + paksha + " Paksh, " + tithiName;
@@ -48,11 +47,11 @@ public class PanchangCalculator {
         }
 
         /** Matches the exact order you asked for: "Choth, 2083, Shravan, Krushna Paksh" */
-        public String getCompactDescription(Language lang) {
-            switch (lang) {
-                case HINDI:
+        public String getCompactDescription() {
+            switch (getLanguage()) {
+                case "HINDI":
                     return tithiNameHindi + ", " + samvatYear + ", " + masaNameHindi + ", " + pakshaHindi + " पक्ष";
-                case GUJARATI:
+                case "GUJARATI":
                     return tithiNameGujarati + ", " + samvatYear + ", " + masaNameGujarati + ", " + pakshaGujarati + " પક્ષ";
                 default:
                     return tithiName + ", " + samvatYear + ", " + masaName + ", " + paksha + " Paksh";
@@ -61,39 +60,70 @@ public class PanchangCalculator {
 //            return masaName + ", " + paksha + " Paksh " + tithiName + ", " + samvatYear;
         }
 
-        public String getTithi(Language lang) {
-            switch (lang) {
-                case HINDI:
-                    return tithiNameHindi + ", " + masaNameHindi + ", " + pakshaHindi + " पक्ष";
-                case GUJARATI:
-                    return tithiNameGujarati + ", " + masaNameGujarati + ", " + pakshaGujarati + " પક્ષ";
+        public String getTithi() {
+            switch (getLanguage()) {
+                case "HINDI":
+                    return String.format("%s, %s पक्ष, %s", masaNameHindi, pakshaHindi, tithiNameHindi);
+                case "GUJARATI":
+                    return String.format("%s, %s, %s", masaNameGujarati, pakshaGujarati, tithiNameGujarati);
+                case "ENGLISH":
                 default:
-                    return tithiName + ", " + masaName + ", " + paksha + " Paksh";
+                    return String.format("%s, %s Paksh, %s", masaName, paksha, tithiName);
             }
         }
 
-        public String getVS(Language lang) {
-            /*Vikram Samvat*/
-            switch (lang) {
-                case HINDI:
-                    return "विक्रम संवत, " + samvatYear;
-                case GUJARATI:
-                    return "વિક્રમ સંવત, " + samvatYear;
+        public String getVS() {
+            switch (getLanguage()) {
+                case "HINDI":
+                    return "विक्रम संवत, " + getVikramSamvat();
+                case "GUJARATI":
+                    return "વિક્રમ સંવત, " + getVikramSamvat();
                 default:
-                    return "Vikram Samvat, " + samvatYear;
+                    return "Vikram Samvat, " + getVikramSamvat();
             }
         }
 
         public boolean isShuklaPaksh() {
-            return "Shukla".equalsIgnoreCase(paksha);
-        }
-
-        public boolean isKrushnaPaksh() {
-            return "Krushna".equalsIgnoreCase(paksha);
+            switch (getLanguage()) {
+                case "HINDI":
+                    return "शुक्ल".equalsIgnoreCase(pakshaHindi);
+                case "GUJARATI":
+                    return "સુદ".equalsIgnoreCase(pakshaGujarati);
+                default:
+                    return  "Shukla".equalsIgnoreCase(paksha);
+            }
         }
 
         public Integer getVSYear() {
             return samvatYear;
+        }
+
+        public String getVikramSamvat() {
+            switch (getLanguage()) {
+                case "HINDI":
+                    return formatNumber(samvatYear, new java.util.Locale("hi"));
+                case "GUJARATI":
+                    return formatNumber(samvatYear, new java.util.Locale("gu"));
+                default:
+                    return  formatNumber(samvatYear, new java.util.Locale("en"));
+            }
+        }
+
+        private String formatNumber(int number, Locale locale) {
+            Locale numLocale;
+            switch (locale.getLanguage()) {
+                case "hi":
+                    numLocale = Locale.forLanguageTag("hi-IN-u-nu-deva"); // ०१२३...
+                    break;
+                case "gu":
+                    numLocale = Locale.forLanguageTag("gu-IN-u-nu-gujr"); // ૦૧૨૩...
+                    break;
+                default:
+                    return String.valueOf(number); // 2026
+            }
+            java.text.NumberFormat nf = java.text.NumberFormat.getInstance(numLocale);
+            nf.setGroupingUsed(false);
+            return nf.format(number);
         }
     }
 
@@ -103,6 +133,7 @@ public class PanchangCalculator {
         TithiCalculator.Result activeTithi = TithiCalculator.getTithi(sunriseUtc);
         MasaCalculator.MasaResult masa = MasaCalculator.getMasa(sunriseUtc);
         int samvatYear = VikramSamvatCalculator.getYear(sunriseUtc, date);
+        NakshatraCalculator.Result nak = NakshatraCalculator.get(sunriseUtc, utcOffsetHr);
 
         PanchangResult result = new PanchangResult();
         result.samvatYear = samvatYear;
@@ -118,14 +149,24 @@ public class PanchangCalculator {
         result.tithiNameGujarati = activeTithi.tithiNameGujarati;
         result.tithiNumber = activeTithi.tithiNumber;
         result.tithiNumeralScript = activeTithi.tithiNumeralScript;
+        result.nakshatra = nak.name;
+        result.nakshatraTime = nak.endLocal;
         return result;
     }
 
     public static String getDescription(LocalDate date) {
-        return getDescription(date, Language.ENGLISH);
+        return getPanchang(date, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getDescription();
     }
 
-    public static String getDescription(LocalDate date, Language lang) {
-        return getPanchang(date, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET).getDescription(lang);
+    public static NakshatraCalculator.Result getNakshatra(LocalDate localDate){
+       return NakshatraCalculator.getForDate(localDate);
+    }
+
+    public static String getLanguage() {
+        String lang = SharePreferenceManager.getString("LANGUAGE");
+        if (lang == null) {
+            return "ENGLISH";
+        }
+        return lang.trim().toUpperCase();
     }
 }
