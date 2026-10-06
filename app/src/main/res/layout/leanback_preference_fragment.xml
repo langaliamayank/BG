@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:transitionGroup="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@color/colorBlack50"
+        android:elevation="@dimen/lb_preference_decor_title_container_elevation"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/lb_preference_item_text_space_top"
+        android:paddingBottom="@dimen/lb_preference_item_text_space_bottom"
+        android:transitionGroup="false">
+
+        <LinearLayout
+            android:id="@+id/decor_title_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/lb_preference_decor_title_margin_start"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/decor_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/lb_preference_item_primary_text_margin_bottom"
+                android:textColor="@color/lb_preference_item_primary_text_color"
+                android:textSize="@dimen/lb_preference_decor_title_text_size" />
+
+            <TextView
+                android:id="@+id/decor_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/lb_preference_item_secondary_text_color"
+                android:textSize="@dimen/lb_preference_item_secondary_text_size" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/appPoster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_banner"
+            android:layout_marginRight="@dimen/_10sdp" />
+
+    </LinearLayout>
+
+</LinearLayout>

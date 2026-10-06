@@ -19,15 +19,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidtv.bhagavadgita.R;
 import com.androidtv.bhagavadgita.calendar.CalendarUtils;
+import com.androidtv.bhagavadgita.calendar.EkadashiNameHelper;
 import com.androidtv.bhagavadgita.calendar.Language;
+import com.androidtv.bhagavadgita.calendar.MasaCalculator;
 import com.androidtv.bhagavadgita.calendar.NakshatraCalculator;
 import com.androidtv.bhagavadgita.calendar.PanchangCalculator;
+import com.androidtv.bhagavadgita.calendar.SunriseCalculator;
+import com.androidtv.bhagavadgita.calendar.TithiCalculator;
 import com.androidtv.bhagavadgita.comman.ColorUtils;
 import com.androidtv.bhagavadgita.comman.LogTag;
 import com.androidtv.bhagavadgita.comman.SharePreferenceManager;
 import com.androidtv.bhagavadgita.fragment.CalendarMonthFragment;
 import com.androidtv.bhagavadgita.model.DayModel;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
@@ -95,6 +102,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
         holder.tvPrimaryDate.setText(getPrimaryDate(day));
 
+        if (day.isCurrentMonth() && getEkadashi(day.getDate()) != null) {
+            LogTag.e("Ekadashi " + day.getDate() + " => " + getEkadashi(day.getDate()));
+        }
+
         boolean isShuklaPaksh = PanchangCalculator.getPanchang(
                 day.getDate(), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
         ).isShuklaPaksh();
@@ -139,6 +150,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             todayEdgeColor(holder, ContextCompat.getColor(holder.childLayout.getContext(), R.color.colorFocus));
             holder.tvPrimaryDate.setTextColor(Color.WHITE);
             holder.tvDescription.setTextColor(Color.WHITE);
+        }
+
+        boolean calAP = SharePreferenceManager.getBoolean("CAL_AP", true);
+        if (!calAP) {
+            holder.imageAP.setVisibility(View.GONE);
+        } else {
+            holder.imageAP.setVisibility(View.VISIBLE);
         }
 
         if (day.isPunam()) {
@@ -277,5 +295,34 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             default:
                 return dayModel.getEnglishDate();
         }
+    }
+
+    public String getEkadashi(LocalDate date) {
+        if (!CalendarUtils.isPushtimargEkadashi(date)) {
+            return null;
+        }
+
+        PanchangCalculator.PanchangResult panchang = PanchangCalculator.getPanchang(
+                date, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
+        );
+
+        LocalDateTime sunriseUtc = SunriseCalculator.getSunriseUtc(
+                date, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
+        );
+
+        MasaCalculator.MasaResult masa = MasaCalculator.getMasa(sunriseUtc);
+        Language lang = Language.fromString(PanchangCalculator.getLanguage(), Language.ENGLISH);
+
+        boolean isShukla = (panchang.tithiNumber == 11 || panchang.tithiNumber == 12);
+        if (panchang.tithiNumber == 26 || panchang.tithiNumber == 27) {
+            isShukla = false;
+        }
+
+        return EkadashiNameHelper.getEkadashiName(
+                masa.masaIndex,
+                isShukla,
+                masa.isAdhik,
+                lang
+        );
     }
 }

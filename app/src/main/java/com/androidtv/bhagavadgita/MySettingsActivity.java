@@ -3,8 +3,9 @@ package com.androidtv.bhagavadgita;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
-public class MySettingsActivity extends MasterActivity {
+public class MySettingsActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

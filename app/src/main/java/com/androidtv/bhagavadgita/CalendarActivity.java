@@ -199,6 +199,12 @@ public class CalendarActivity extends MasterActivity {
                         ? LocalDate.now()
                         : shown.atDay(1);
 
+                View textToday = findViewById(R.id.textToday);
+                if (textToday != null) {
+                    boolean isCurrentMonth = YearMonth.now().equals(shown);
+                    textToday.setVisibility(isCurrentMonth ? View.VISIBLE : View.GONE);
+                }
+
                 getTippaniList(shownDate);
 
                 findViewById(R.id.imagePrev).setAlpha(position <= pagerAdapter.getFirstPosition() ? 0f : 1f);
@@ -317,6 +323,27 @@ public class CalendarActivity extends MasterActivity {
 
         tvMonthTitle = findViewById(R.id.tvMonthTitle);
         tvMonthVS = findViewById(R.id.tvMonthVS);
+
+        View textToday = findViewById(R.id.textToday);
+        if (textToday != null) {
+            textToday.setVisibility(View.VISIBLE);
+        }
+
+        boolean calAP = SharePreferenceManager.getBoolean("CAL_AP", true);
+        if (!calAP) {
+            findViewById(R.id.textAmavas).setVisibility(View.GONE);
+            findViewById(R.id.textPunam).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.textAmavas).setVisibility(View.VISIBLE);
+            findViewById(R.id.textPunam).setVisibility(View.VISIBLE);
+        }
+
+        boolean calEVENTS = SharePreferenceManager.getBoolean("CAL_EVENTS", true);
+        if (!calEVENTS) {
+            findViewById(R.id.textEvents).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.textEvents).setVisibility(View.VISIBLE);
+        }
     }
 
     private String getMonthTitle(YearMonth yearMonth, Locale locale) {
@@ -345,8 +372,8 @@ public class CalendarActivity extends MasterActivity {
     }
 
     private String toIndicDigits(int number, Language lang) {
-        String[] hindi   = {"०","१","२","३","४","५","६","७","८","९"};
-        String[] gujarati = {"૦","૧","૨","૩","૪","૫","૬","૭","૮","૯"};
+        String[] hindi = {"०", "१", "२", "३", "४", "५", "६", "७", "८", "९"};
+        String[] gujarati = {"૦", "૧", "૨", "૩", "૪", "૫", "૬", "૭", "૮", "૯"};
         String[] map = (lang == Language.HINDI) ? hindi
                 : (lang == Language.GUJARATI) ? gujarati : null;
 

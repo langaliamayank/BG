@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -144,5 +145,58 @@ public class CalendarUtils {
             // Handle error or load a default/placeholder message if the year file isn't found
         }
         return festivalMap;
+    }
+
+    /**
+     * Checks if the given date is an Ekadashi strictly according to Pushtimarg / Vaishnava rules:
+     * - Discards Dashami-viddha Ekadashi.
+     * - When Ekadashi is Dashami-viddha or Kshaya, the observance is observed on Dwadashi.
+     */
+    public static boolean isPushtimargEkadashi(LocalDate date) {
+        LocalDateTime sunriseToday = SunriseCalculator.getSunriseUtc(
+                date, CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
+        );
+        LocalDateTime arunodayaToday = sunriseToday.minusMinutes(96);
+
+        int tithiSunriseToday = TithiCalculator.getTithi(sunriseToday).tithiNumber;
+        int tithiArunodayaToday = TithiCalculator.getTithi(arunodayaToday).tithiNumber;
+
+        // --- RULE 1: Pure / Shuddha Ekadashi at Sunrise today ---
+        // (Ekadashi at sunrise AND Ekadashi at Arunodaya — no Dashami influence)
+        boolean isShuklaEkadashiToday = (tithiSunriseToday == 11 && tithiArunodayaToday == 11);
+        boolean isKrishnaEkadashiToday = (tithiSunriseToday == 26 && tithiArunodayaToday == 26);
+
+        if (isShuklaEkadashiToday || isKrishnaEkadashiToday) {
+            return true;
+        }
+
+        // --- RULE 2: Dwadashi observing Ekadashi (Viddha shift or Tithi Kshaya) ---
+        // Look at yesterday's conditions to see if yesterday was Viddha or if Ekadashi was kshaya.
+        LocalDateTime sunriseYesterday = SunriseCalculator.getSunriseUtc(
+                date.minusDays(1), CalendarUtils.LAT, CalendarUtils.LON, CalendarUtils.UTC_OFFSET
+        );
+        LocalDateTime arunodayaYesterday = sunriseYesterday.minusMinutes(96);
+
+        int tithiSunriseYesterday = TithiCalculator.getTithi(sunriseYesterday).tithiNumber;
+        int tithiArunodayaYesterday = TithiCalculator.getTithi(arunodayaYesterday).tithiNumber;
+
+        // Case 2A: Yesterday sunrise was Ekadashi (11 or 26), but Arunodaya was Dashami (10 or 25)
+        // -> Pushtimarg shifts fast to today (Dwadashi: 12 or 27)
+        boolean wasShuklaViddha = (tithiSunriseYesterday == 11 && tithiArunodayaYesterday == 10);
+        boolean wasKrishnaViddha = (tithiSunriseYesterday == 26 && tithiArunodayaYesterday == 25);
+
+        if (wasShuklaViddha && tithiSunriseToday == 12) {
+            return true;
+        }
+        if (wasKrishnaViddha && tithiSunriseToday == 27) {
+            return true;
+        }
+
+        // Case 2B: Ekadashi Kshaya
+        // Yesterday sunrise was Dashami (10/25) and today sunrise is already Dwadashi (12/27)
+        boolean isShuklaKshaya = (tithiSunriseYesterday == 10 && tithiSunriseToday == 12);
+        boolean isKrishnaKshaya = (tithiSunriseYesterday == 25 && tithiSunriseToday == 27);
+
+        return isShuklaKshaya || isKrishnaKshaya;
     }
 }

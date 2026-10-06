@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /** Computes local sunrise time (returned as UTC LocalDateTime) for a lat/lon on a given date. */
-class SunriseCalculator {
+public class SunriseCalculator {
 
     /**
      * @param date        local calendar date
@@ -12,7 +12,7 @@ class SunriseCalculator {
      * @param lonDeg      longitude in degrees (+E)
      * @param utcOffsetHr local timezone offset from UTC (e.g. 5.5 for IST)
      */
-    static LocalDateTime getSunriseUtc(LocalDate date, double latDeg, double lonDeg, double utcOffsetHr) {
+    public static LocalDateTime getSunriseUtc(LocalDate date, double latDeg, double lonDeg, double utcOffsetHr) {
         // start from local midnight in UTC as first guess (used only to seed the JD iteration)
         LocalDateTime guessUtc = date.atStartOfDay().minusMinutes((long) (utcOffsetHr * 60));
         double jd = AstroMath.toJulianDay(guessUtc);

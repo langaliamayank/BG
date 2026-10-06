@@ -3,32 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="My Settings">
 
-    <SwitchPreference
-        android:key="keyAutoplay"
-        android:title="Autoplay Next Verse"
-        android:summaryOn="Next verse plays automatically"
-        android:summaryOff="Playback stops after current verse"
-        android:defaultValue="true" />
+    <PreferenceCategory
+        android:layout="@layout/pref_category_widget"
+        android:title="Playback"
+        app:initialExpandedChildrenCount="1">
 
-    <SwitchPreference
-        android:key="keyCalendarEvents"
-        android:title="Calendar Events"
-        android:summaryOn="Show upcoming events"
-        android:summaryOff="Hide upcoming events"
-        android:defaultValue="true" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="keyAutoplay"
+            android:summaryOff="Playback stops after current verse"
+            android:summaryOn="Next verse plays automatically"
+            android:title="Autoplay Next Verse"
+            android:widgetLayout="@layout/pref_switch_widget" />
+    </PreferenceCategory>
 
-    <ListPreference
-        android:entries="@array/listArray"
-        android:entryValues="@array/listValues"
-        android:key="keyLanguage"
-        android:summary="English"
-        android:title="Language"
-        app:useSimpleSummaryProvider="true" />
+    <PreferenceCategory
+        android:layout="@layout/pref_category_widget"
+        android:title="Calendar">
 
-    <PreferenceScreen
-        android:key="keyVersion"
-        android:selectable="false"
-        android:summary="v1.0"
-        android:title="Version" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="keyCalendarEvents"
+            android:summaryOff="Hide upcoming events"
+            android:summaryOn="Show upcoming events"
+            android:title="Calendar Events"
+            android:widgetLayout="@layout/pref_switch_widget"
+            app:thumbTint="@color/colorGreen" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="keyCalendarAP"
+            android:summaryOff="Hide Amavasya / Purnima indicators"
+            android:summaryOn="Show Amavasya / Purnima indicators"
+            android:title="Calendar Highlights"
+            android:widgetLayout="@layout/pref_switch_widget" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/pref_category_widget"
+        android:title="General">
+
+        <ListPreference
+            android:entries="@array/listArray"
+            android:entryValues="@array/listValues"
+            android:key="keyLanguage"
+            android:summary="English"
+            android:title="Language"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
